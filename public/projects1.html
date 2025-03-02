@@ -25,374 +25,62 @@
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      background-color: var(--gray-100);
-      color: var(--gray-700);
-      display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .sidebar {
-      width: 250px;
-      background-color: var(--dark);
-      color: var(--white);
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      z-index: 100;
-    }
-    .sidebar-header {
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .sidebar-header img {
-      height: 32px;
-      margin-right: 0.5rem;
-    }
-    .sidebar-brand {
-      font-weight: 700;
-      font-size: 1.25rem;
-    }
-    .sidebar-menu {
-      padding: 1rem 0;
-      flex-grow: 1;
-    }
-    .sidebar-menu ul {
-      list-style: none;
-    }
-    .sidebar-menu li {
-      margin-bottom: 0.25rem;
-    }
-    .sidebar-menu i {
-      margin-right: 0.75rem;
-      width: 20px;
-      text-align: center;
-    }
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1.5rem;
-      color: var(--gray-300);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .sidebar-menu a:hover,
-    .sidebar-menu a.active {
-      background-color: rgba(255,255,255,0.1);
-      color: var(--white);
-      border-left: 3px solid var(--secondary);
-    }
-    .sidebar-footer {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-    }
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-right: 0.75rem;
-    }
-    .main-content {
-      flex-grow: 1;
-      margin-left: 250px;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      width: calc(100% - 250px);
-    }
-    .topbar {
-      background-color: var(--white);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 0;
-      z-index: 99;
-    }
-    .toggle-sidebar {
-      background: none;
-      border: none;
-      color: var(--gray-700);
-      cursor: pointer;
-      font-size: 1.25rem;
-      padding: 0.25rem;
-      display: none;
-    }
-    .search-bar {
-      position: relative;
-      flex-grow: 1;
-      max-width: 500px;
-      margin: 0 1rem;
-    }
-    .search-bar input {
-      width: 100%;
-      padding: 0.5rem 1rem 0.5rem 2.5rem;
-      border: 1px solid var(--gray-200);
-      border-radius: 9999px;
-      background-color: var(--gray-100);
-      outline: none;
-      transition: all 0.2s;
-    }
-    .search-bar input:focus {
-      border-color: var(--primary);
-      background-color: var(--white);
-    }
-    .search-bar i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray-500);
-    }
-    .topbar-tools {
-      display: flex;
-      align-items: center;
-    }
-    .topbar-btn {
-      background: none;
-      border: none;
-      color: var(--gray-700);
-      cursor: pointer;
-      font-size: 1rem;
-      margin-left: 1rem;
-      position: relative;
-      padding: 0.5rem;
-    }
-    .notification-badge {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background-color: var(--danger);
-      color: var(--white);
-      font-size: 0.6rem;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .page-content {
-      padding: 1.5rem;
-      overflow-y: auto;
-    }
-    .page-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--dark);
-    }
-    .page-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: 500;
-      font-size: 0.875rem;
-      transition: all 0.2s;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      border: none;
-    }
-    .btn i {
-      margin-right: 0.5rem;
-    }
-    .btn-primary {
-      background-color: var(--primary);
-      color: var(--white);
-    }
-    .btn-primary:hover {
-      background-color: var(--primary-light);
-    }
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid var(--gray-300);
-    }
-    .btn-outline:hover {
-      background-color: var(--gray-100);
-    }
-    .projects-table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: var(--white);
-      box-shadow: var(--shadow);
-      margin-bottom: 2rem;
-      border-radius: 0.375rem;
-      overflow: hidden;
-    }
-    .projects-table thead {
-      background-color: var(--gray-200);
-    }
-    .projects-table th,
-    .projects-table td {
-      text-align: left;
-      padding: 0.75rem 1rem;
-      font-size: 0.875rem;
-    }
-    .projects-table th {
-      font-weight: 600;
-      color: var(--gray-700);
-    }
-    .projects-table tr {
-      border-bottom: 1px solid var(--gray-200);
-    }
-    .projects-table tr:last-child {
-      border-bottom: none;
-    }
-    .table-action-btn {
-      padding: 0.25rem 0.5rem;
-      border: none;
-      cursor: pointer;
-      font-size: 0.75rem;
-      border-radius: 0.25rem;
-      margin-right: 0.25rem;
-    }
-    .table-action-btn.view {
-      background-color: var(--secondary);
-      color: var(--white);
-    }
-    .table-action-btn.edit {
-      background-color: var(--warning);
-      color: var(--white);
-    }
-    .table-action-btn.delete {
-      background-color: var(--danger);
-      color: var(--white);
-    }
-    .jira-section {
-      background-color: var(--white);
-      box-shadow: var(--shadow);
-      padding: 1rem;
-      border-radius: 0.375rem;
-      margin-bottom: 1.5rem;
-    }
-    .jira-section h2 {
-      margin-bottom: 1rem;
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
-    .jira-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .jira-issues-list,
-    .jira-projects-list {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid var(--gray-200);
-      border-radius: 0.375rem;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .jira-issue-item,
-    .jira-project-item {
-      padding: 0.5rem;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-    }
-    .jira-issue-item:hover,
-    .jira-project-item:hover {
-      background-color: var(--gray-100);
-    }
-    .jira-issue-item:last-child,
-    .jira-project-item:last-child {
-      border-bottom: none;
-    }
-    .jira-issue-key,
-    .jira-project-key {
-      font-weight: 600;
-      color: var(--primary);
-    }
-    .jira-issue-summary,
-    .jira-project-name {
-      font-size: 0.875rem;
-      margin: 0.25rem 0;
-    }
-    .jira-issue-status,
-    .jira-project-type {
-      font-size: 0.75rem;
-      color: var(--gray-500);
-    }
-
-    /* Confluence section styling */
-    .confluence-section {
-      background-color: var(--white);
-      box-shadow: var(--shadow);
-      padding: 1rem;
-      border-radius: 0.375rem;
-      margin-bottom: 1.5rem;
-    }
-    .confluence-section h2 {
-      margin-bottom: 1rem;
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
-    .confluence-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .confluence-list {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid var(--gray-200);
-      border-radius: 0.375rem;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .confluence-item {
-      padding: 0.5rem;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-    }
-    .confluence-item:hover {
-      background-color: var(--gray-100);
-    }
-    .confluence-item:last-child {
-      border-bottom: none;
-    }
-    .confluence-space-key,
-    .confluence-page-title {
-      font-weight: 600;
-      color: var(--primary);
-    }
-    .confluence-space-name,
-    .confluence-page-status {
-      font-size: 0.875rem;
-      margin: 0.25rem 0;
-    }
-
-    /* Modal styles for New Project, Jira Project, Jira Issue, Confluence, etc. */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--gray-100); color: var(--gray-700); display: flex; min-height: 100vh; overflow-x: hidden; }
+    .sidebar { width: 250px; background-color: var(--dark); color: var(--white); transition: all 0.3s; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+    .sidebar-header { padding: 1.5rem; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-header img { height: 32px; margin-right: 0.5rem; }
+    .sidebar-brand { font-weight: 700; font-size: 1.25rem; }
+    .sidebar-menu { padding: 1rem 0; flex-grow: 1; }
+    .sidebar-menu ul { list-style: none; }
+    .sidebar-menu li { margin-bottom: 0.25rem; }
+    .sidebar-menu i { margin-right: 0.75rem; width: 20px; text-align: center; }
+    .sidebar-menu a { display: flex; align-items: center; padding: 0.75rem 1.5rem; color: var(--gray-300); text-decoration: none; transition: all 0.2s; }
+    .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(255,255,255,0.1); color: var(--white); border-left: 3px solid var(--secondary); }
+    .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .user-info { display: flex; align-items: center; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; margin-right: 0.75rem; }
+    .main-content { flex-grow: 1; margin-left: 250px; transition: all 0.3s; display: flex; flex-direction: column; width: calc(100% - 250px); }
+    .topbar { background-color: var(--white); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 99; }
+    .toggle-sidebar { background: none; border: none; color: var(--gray-700); cursor: pointer; font-size: 1.25rem; padding: 0.25rem; display: none; }
+    .search-bar { position: relative; flex-grow: 1; max-width: 500px; margin: 0 1rem; }
+    .search-bar input { width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--gray-200); border-radius: 9999px; background-color: var(--gray-100); outline: none; transition: all 0.2s; }
+    .search-bar input:focus { border-color: var(--primary); background-color: var(--white); }
+    .search-bar i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray-500); }
+    .topbar-tools { display: flex; align-items: center; }
+    .topbar-btn { background: none; border: none; color: var(--gray-700); cursor: pointer; font-size: 1rem; margin-left: 1rem; position: relative; padding: 0.5rem; }
+    .notification-badge { position: absolute; top: 0; right: 0; background-color: var(--danger); color: var(--white); font-size: 0.6rem; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .page-content { padding: 1.5rem; overflow-y: auto; }
+    .page-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .page-actions { display: flex; gap: 0.5rem; }
+    .btn { padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; border: none; }
+    .btn i { margin-right: 0.5rem; }
+    .btn-primary { background-color: var(--primary); color: var(--white); }
+    .btn-primary:hover { background-color: var(--primary-light); }
+    .btn-outline { background-color: transparent; border: 1px solid var(--gray-300); }
+    .btn-outline:hover { background-color: var(--gray-100); }
+    .projects-table { width: 100%; border-collapse: collapse; background-color: var(--white); box-shadow: var(--shadow); margin-bottom: 2rem; border-radius: 0.375rem; overflow: hidden; }
+    .projects-table thead { background-color: var(--gray-200); }
+    .projects-table th, .projects-table td { text-align: left; padding: 0.75rem 1rem; font-size: 0.875rem; }
+    .projects-table th { font-weight: 600; color: var(--gray-700); }
+    .projects-table tr { border-bottom: 1px solid var(--gray-200); }
+    .projects-table tr:last-child { border-bottom: none; }
+    .table-action-btn { padding: 0.25rem 0.5rem; border: none; cursor: pointer; font-size: 0.75rem; border-radius: 0.25rem; margin-right: 0.25rem; }
+    .table-action-btn.view { background-color: var(--secondary); color: var(--white); }
+    .table-action-btn.edit { background-color: var(--warning); color: var(--white); }
+    .table-action-btn.delete { background-color: var(--danger); color: var(--white); }
+    .jira-section { background-color: var(--white); box-shadow: var(--shadow); padding: 1rem; border-radius: 0.375rem; margin-bottom: 1.5rem; }
+    .jira-section h2 { margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; }
+    .jira-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .jira-issues-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--gray-200); border-radius: 0.375rem; padding: 0.5rem; }
+    .jira-issue-item { padding: 0.5rem; border-bottom: 1px solid var(--gray-200); display: flex; flex-direction: column; cursor: pointer; }
+    .jira-issue-item:hover { background-color: var(--gray-100); }
+    .jira-issue-item:last-child { border-bottom: none; }
+    .jira-issue-key { font-weight: 600; color: var(--primary); }
+    .jira-issue-summary { font-size: 0.875rem; margin: 0.25rem 0; }
+    .jira-issue-status { font-size: 0.75rem; color: var(--gray-500); }
+    /* Modal styles for New Project and Jira Issue */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -405,9 +93,7 @@
       justify-content: center;
       z-index: 999;
     }
-    .modal-overlay.active {
-      display: flex;
-    }
+    .modal-overlay.active { display: flex; }
     .modal {
       background: var(--white);
       border-radius: 0.5rem;
@@ -422,32 +108,12 @@
       margin-bottom: 1rem;
       align-items: center;
     }
-    .modal-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.25rem;
-      cursor: pointer;
-      color: var(--gray-500);
-    }
-    .modal-body {
-      margin-bottom: 1rem;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.25rem;
-      font-weight: 500;
-      font-size: 0.875rem;
-    }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+    .modal-title { font-size: 1.125rem; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--gray-500); }
+    .modal-body { margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.25rem; font-weight: 500; font-size: 0.875rem; }
+    .form-group input, .form-group textarea, .form-group select {
       width: 100%;
       padding: 0.5rem;
       border: 1px solid var(--gray-300);
@@ -456,32 +122,16 @@
       outline: none;
       transition: border-color 0.2s;
     }
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
       border-color: var(--primary);
     }
-    .modal-footer {
-      text-align: right;
-    }
-    .modal-footer button {
-      margin-left: 0.5rem;
-    }
+    .modal-footer { text-align: right; }
+    .modal-footer button { margin-left: 0.5rem; }
     @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-        position: fixed;
-      }
-      .sidebar.active {
-        transform: translateX(0);
-      }
-      .main-content {
-        margin-left: 0;
-        width: 100%;
-      }
-      .toggle-sidebar {
-        display: block;
-      }
+      .sidebar { transform: translateX(-100%); position: fixed; }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-left: 0; width: 100%; }
+      .toggle-sidebar { display: block; }
     }
   </style>
 </head>
@@ -543,7 +193,7 @@
         </div>
       </div>
 
-      <!-- Table of Existing (Local) Projects -->
+      <!-- Table of Existing Projects -->
       <table class="projects-table">
         <thead>
           <tr>
@@ -584,46 +234,20 @@
       <div class="jira-section">
         <h2>Jira Integration</h2>
         <p style="margin-bottom: 1rem;">
-          Connect your Jira projects, load issues, and manage them directly from GitPact.
+          Connect your Jira projects, load issues, and create or transition them directly from GitPact.
         </p>
         <div class="jira-buttons">
           <button class="btn btn-outline" id="connectJiraBtn"><i class="fab fa-jira"></i> Connect Jira</button>
-          <button class="btn btn-outline" id="loadJiraProjectsBtn"><i class="fas fa-tasks"></i> Load Projects</button>
-          <button class="btn btn-outline" id="createJiraProjectBtn"><i class="fas fa-plus"></i> Create Project</button>
           <button class="btn btn-primary" id="loadJiraIssuesBtn"><i class="fas fa-sync-alt"></i> Load Issues</button>
           <button class="btn btn-outline" id="createJiraIssueBtn"><i class="fas fa-plus"></i> Create Issue</button>
         </div>
-
-        <!-- Container to display loaded Jira projects -->
-        <div class="jira-projects-list" id="jiraProjectsContainer"></div>
-
         <!-- Container to display loaded Jira issues -->
         <div class="jira-issues-list" id="jiraIssuesContainer"></div>
-      </div>
-
-      <!-- Confluence Integration Section -->
-      <div class="confluence-section">
-        <h2>Confluence Integration</h2>
-        <p style="margin-bottom: 1rem;">
-          Connect to Confluence, load spaces/pages, and create pages directly from GitPact.
-        </p>
-        <div class="confluence-buttons">
-          <button class="btn btn-outline" id="connectConfluenceBtn"><i class="fab fa-confluence"></i> Connect Confluence</button>
-          <button class="btn btn-outline" id="loadConfluenceSpacesBtn"><i class="fas fa-folder-open"></i> Load Spaces</button>
-          <button class="btn btn-outline" id="loadConfluencePagesBtn"><i class="fas fa-file-alt"></i> Load Pages</button>
-          <button class="btn btn-primary" id="createConfluencePageBtn"><i class="fas fa-plus"></i> Create Page</button>
-        </div>
-
-        <!-- Container to display Confluence spaces -->
-        <div class="confluence-list" id="confluenceSpacesContainer"></div>
-
-        <!-- Container to display Confluence pages -->
-        <div class="confluence-list" id="confluencePagesContainer"></div>
       </div>
     </div>
   </div>
 
-  <!-- Modal for New Local Project -->
+  <!-- Modal for New Project -->
   <div class="modal-overlay" id="projectModalOverlay">
     <div class="modal">
       <div class="modal-header">
@@ -711,93 +335,6 @@
     </div>
   </div>
 
-  <!-- Modal for Creating Jira Project -->
-  <div class="modal-overlay" id="jiraProjectModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create Jira Project</div>
-        <button class="modal-close" id="closeJiraProjectModalBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="jiraProjectName">Project Name</label>
-          <input type="text" id="jiraProjectName" placeholder="e.g. 'New Marketing Campaign'" />
-        </div>
-        <div class="form-group">
-          <label for="jiraProjectKeyCreate">Project Key</label>
-          <input type="text" id="jiraProjectKeyCreate" placeholder="e.g. MARK" />
-        </div>
-        <div class="form-group">
-          <label for="jiraProjectLead">Project Lead Account ID</label>
-          <input type="text" id="jiraProjectLead" placeholder="Atlassian account ID for the lead" />
-        </div>
-        <div class="form-group">
-          <label for="jiraProjectType">Project Type</label>
-          <select id="jiraProjectType">
-            <option value="software" selected>Software</option>
-            <option value="business">Business</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelJiraProjectBtn">Cancel</button>
-        <button class="btn btn-primary" id="createJiraProjectModalBtn">Create Project</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Editing Jira Project -->
-  <div class="modal-overlay" id="jiraProjectEditModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Edit Jira Project</div>
-        <button class="modal-close" id="closeJiraProjectEditModalBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="editJiraProjectName">Project Name</label>
-          <input type="text" id="editJiraProjectName" />
-        </div>
-        <div class="form-group">
-          <label for="editJiraProjectKey">Project Key</label>
-          <input type="text" id="editJiraProjectKey" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelJiraProjectEditBtn">Cancel</button>
-        <button class="btn btn-primary" id="saveJiraProjectEditBtn">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Creating Confluence Page -->
-  <div class="modal-overlay" id="confluencePageModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create Confluence Page</div>
-        <button class="modal-close" id="closeConfluencePageModalBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="confluenceSpaceKey">Space Key</label>
-          <input type="text" id="confluenceSpaceKey" placeholder="e.g. MARKETING" />
-        </div>
-        <div class="form-group">
-          <label for="confluencePageTitle">Page Title</label>
-          <input type="text" id="confluencePageTitle" placeholder="e.g. Campaign Brainstorm" />
-        </div>
-        <div class="form-group">
-          <label for="confluencePageContent">Page Content (HTML)</label>
-          <textarea id="confluencePageContent" rows="4" placeholder="<p>Hello world</p>"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelConfluencePageBtn">Cancel</button>
-        <button class="btn btn-primary" id="createConfluencePageModalBtn">Create Page</button>
-      </div>
-    </div>
-  </div>
-
   <!-- JavaScript -->
   <script>
     // Toggle Sidebar for smaller screens
@@ -807,7 +344,7 @@
       sidebar.classList.toggle('active');
     });
 
-    // ---------------- Modal Logic for New Local Project ----------------
+    // ---------------- Modal Logic for New Project ----------------
     const newProjectBtn = document.getElementById('newProjectBtn');
     const projectModalOverlay = document.getElementById('projectModalOverlay');
     const closeProjectModalBtn = document.getElementById('closeProjectModalBtn');
@@ -820,15 +357,12 @@
     const closeProjectModal = () => projectModalOverlay.classList.remove('active');
     if (closeProjectModalBtn) closeProjectModalBtn.addEventListener('click', closeProjectModal);
     cancelProjectBtn.addEventListener('click', closeProjectModal);
-
     saveProjectBtn.addEventListener('click', () => {
       const name = document.getElementById('projectName').value;
       const owner = document.getElementById('projectOwner').value;
       const deadline = document.getElementById('projectDeadline').value;
       const status = document.getElementById('projectStatus').value || 'Planning';
       const desc = document.getElementById('projectDesc').value;
-
-      // Append a new row to our local projects table
       const tbody = document.getElementById('projectsTableBody');
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -846,8 +380,7 @@
       closeProjectModal();
     });
 
-    // ---------------- Jira: Modals ----------------
-    // Create Issue
+    // ---------------- Modal Logic for Creating Jira Issue ----------------
     const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
     const jiraIssueModalOverlay = document.getElementById('jiraIssueModalOverlay');
     const closeJiraIssueModalBtn = document.getElementById('closeJiraIssueModalBtn');
@@ -860,13 +393,11 @@
     const closeJiraIssueModal = () => jiraIssueModalOverlay.classList.remove('active');
     closeJiraIssueModalBtn.addEventListener('click', closeJiraIssueModal);
     cancelJiraIssueBtn.addEventListener('click', closeJiraIssueModal);
-
     createJiraIssueModalBtn.addEventListener('click', async () => {
       const projectKey = document.getElementById('jiraProjectKey').value;
       const summary = document.getElementById('jiraSummary').value;
       const description = document.getElementById('jiraDescription').value;
       const issueType = document.getElementById('jiraIssueType').value;
-
       if (!projectKey || !summary) {
         alert('Project Key and Issue Summary are required.');
         return;
@@ -875,7 +406,12 @@
         const res = await fetch('/api/jira/issues', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ projectKey, summary, description, issueType })
+          body: JSON.stringify({
+            projectKey,
+            summary,
+            description,
+            issueType
+          })
         });
         if (!res.ok) throw new Error('Issue creation failed');
         const data = await res.json();
@@ -888,7 +424,7 @@
       }
     });
 
-    // View Issue details
+    // ---------------- Modal Logic for Viewing Jira Issue Details ----------------
     const jiraIssueViewModalOverlay = document.getElementById('jiraIssueViewModalOverlay');
     const closeJiraIssueViewModalBtn = document.getElementById('closeJiraIssueViewModalBtn');
     const closeJiraIssueViewBtn = document.getElementById('closeJiraIssueViewBtn');
@@ -915,143 +451,14 @@
       }
     }
 
-    // ---------------- Jira: Projects (Create, Load, Edit) ----------------
+    // ---------------- Jira Integration: Connect, Load Issues, and Check Status ----------------
     const connectJiraBtn = document.getElementById('connectJiraBtn');
     const loadJiraIssuesBtn = document.getElementById('loadJiraIssuesBtn');
-    const loadJiraProjectsBtn = document.getElementById('loadJiraProjectsBtn');
-    const createJiraProjectBtn = document.getElementById('createJiraProjectBtn');
-
     const jiraIssuesContainer = document.getElementById('jiraIssuesContainer');
-    const jiraProjectsContainer = document.getElementById('jiraProjectsContainer');
-
-    // Create Jira Project Modal
-    const jiraProjectModalOverlay = document.getElementById('jiraProjectModalOverlay');
-    const closeJiraProjectModalBtn = document.getElementById('closeJiraProjectModalBtn');
-    const cancelJiraProjectBtn = document.getElementById('cancelJiraProjectBtn');
-    const createJiraProjectModalBtn = document.getElementById('createJiraProjectModalBtn');
-
-    createJiraProjectBtn.addEventListener('click', () => {
-      jiraProjectModalOverlay.classList.add('active');
-    });
-    const closeJiraProjectModal = () => jiraProjectModalOverlay.classList.remove('active');
-    closeJiraProjectModalBtn.addEventListener('click', closeJiraProjectModal);
-    cancelJiraProjectBtn.addEventListener('click', closeJiraProjectModal);
-
-    createJiraProjectModalBtn.addEventListener('click', async () => {
-      const name = document.getElementById('jiraProjectName').value;
-      const key = document.getElementById('jiraProjectKeyCreate').value;
-      const leadAccountId = document.getElementById('jiraProjectLead').value;
-      const projectTypeKey = document.getElementById('jiraProjectType').value;
-
-      if (!name || !key || !leadAccountId) {
-        alert('Name, Key, and Lead Account ID are required.');
-        return;
-      }
-      try {
-        const res = await fetch('/api/jira/projects', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, key, leadAccountId, projectTypeKey })
-        });
-        if (!res.ok) throw new Error('Project creation failed');
-        const data = await res.json();
-        alert(`Created project ${data.key}!`);
-        closeJiraProjectModal();
-        loadJiraProjects();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to create Jira project');
-      }
-    });
-
-    // Edit Jira Project Modal
-    const jiraProjectEditModalOverlay = document.getElementById('jiraProjectEditModalOverlay');
-    const closeJiraProjectEditModalBtn = document.getElementById('closeJiraProjectEditModalBtn');
-    const cancelJiraProjectEditBtn = document.getElementById('cancelJiraProjectEditBtn');
-    const saveJiraProjectEditBtn = document.getElementById('saveJiraProjectEditBtn');
-
-    let currentProjectIdOrKey = null; // track which project is being edited
-
-    const closeJiraProjectEditModal = () => jiraProjectEditModalOverlay.classList.remove('active');
-    closeJiraProjectEditModalBtn.addEventListener('click', closeJiraProjectEditModal);
-    cancelJiraProjectEditBtn.addEventListener('click', closeJiraProjectEditModal);
-
-    saveJiraProjectEditBtn.addEventListener('click', async () => {
-      const updatedName = document.getElementById('editJiraProjectName').value;
-      const updatedKey = document.getElementById('editJiraProjectKey').value;
-
-      if (!updatedName || !updatedKey) {
-        alert('Name and Key are required.');
-        return;
-      }
-      try {
-        const res = await fetch(`/api/jira/projects/${currentProjectIdOrKey}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: updatedName,
-            key: updatedKey
-          })
-        });
-        if (!res.ok) throw new Error('Project update failed');
-        alert('Project updated successfully!');
-        closeJiraProjectEditModal();
-        loadJiraProjects();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to update Jira project');
-      }
-    });
-
-    function openJiraProjectEditModal(project) {
-      currentProjectIdOrKey = project.id;
-      document.getElementById('editJiraProjectName').value = project.name || '';
-      document.getElementById('editJiraProjectKey').value = project.key || '';
-      jiraProjectEditModalOverlay.classList.add('active');
-    }
 
     connectJiraBtn.addEventListener('click', () => {
-      // This simply redirects to the Atlassian OAuth URL
       window.location.href = 'https://gitpactserver.onrender.com/auth/jira';
     });
-
-    loadJiraProjectsBtn.addEventListener('click', loadJiraProjects);
-    loadJiraIssuesBtn.addEventListener('click', loadJiraIssues);
-
-    async function loadJiraProjects() {
-      try {
-        const res = await fetch('/api/jira/projects');
-        if (!res.ok) throw new Error('Failed to fetch Jira projects');
-        const projects = await res.json();
-
-        jiraProjectsContainer.innerHTML = '';
-        if (Array.isArray(projects) && projects.length > 0) {
-          projects.forEach(project => {
-            const item = document.createElement('div');
-            item.classList.add('jira-project-item');
-            item.innerHTML = `
-              <div class="jira-project-key">${project.key}</div>
-              <div class="jira-project-name">${project.name}</div>
-              <div class="jira-project-type">Project Type: ${project.projectTypeKey}</div>
-              <div style="margin-top: 0.25rem;">
-                <button class="btn btn-warning btn-sm" style="font-size: 0.7rem;">Edit</button>
-              </div>
-            `;
-            // Edit Project on button click
-            item.querySelector('button').addEventListener('click', (e) => {
-              e.stopPropagation();
-              openJiraProjectEditModal(project);
-            });
-            jiraProjectsContainer.appendChild(item);
-          });
-        } else {
-          jiraProjectsContainer.innerHTML = '<p>No Jira projects found.</p>';
-        }
-      } catch (error) {
-        alert('Error loading Jira projects');
-        console.error(error);
-      }
-    }
 
     async function loadJiraIssues() {
       try {
@@ -1068,6 +475,7 @@
               <div class="jira-issue-summary">${issue.fields.summary}</div>
               <div class="jira-issue-status">Status: ${issue.fields.status.name}</div>
             `;
+            // When an issue item is clicked, view its details
             item.addEventListener('click', () => viewJiraIssue(issue.key));
             jiraIssuesContainer.appendChild(item);
           });
@@ -1086,6 +494,7 @@
         const status = await res.json();
         if (status.connected) {
           connectJiraBtn.textContent = 'Connected to Jira';
+          loadJiraIssues();
         } else {
           connectJiraBtn.textContent = 'Connect Jira';
         }
@@ -1094,140 +503,16 @@
       }
     }
 
-    // Optional: Add event listeners for local project view buttons
+    window.addEventListener('load', checkJiraStatus);
+
+    // Optional: Add event listeners for project view buttons (for your platform's projects)
     document.getElementById('projectsTableBody').addEventListener('click', (e) => {
       if (e.target.classList.contains('view')) {
         const projectName = e.target.getAttribute('data-project');
+        // Here you would navigate to a detailed view of the project.
+        // For demonstration, we'll simply alert the project name.
         alert(`Viewing details for project: ${projectName}`);
       }
-    });
-
-    // ---------------- Confluence Integration ----------------
-    const connectConfluenceBtn = document.getElementById('connectConfluenceBtn');
-    const loadConfluenceSpacesBtn = document.getElementById('loadConfluenceSpacesBtn');
-    const loadConfluencePagesBtn = document.getElementById('loadConfluencePagesBtn');
-    const createConfluencePageBtn = document.getElementById('createConfluencePageBtn');
-
-    const confluenceSpacesContainer = document.getElementById('confluenceSpacesContainer');
-    const confluencePagesContainer = document.getElementById('confluencePagesContainer');
-
-    // Create Confluence Page Modal
-    const confluencePageModalOverlay = document.getElementById('confluencePageModalOverlay');
-    const closeConfluencePageModalBtn = document.getElementById('closeConfluencePageModalBtn');
-    const cancelConfluencePageBtn = document.getElementById('cancelConfluencePageBtn');
-    const createConfluencePageModalBtn = document.getElementById('createConfluencePageModalBtn');
-
-    connectConfluenceBtn.addEventListener('click', () => {
-      window.location.href = 'https://gitpactserver.onrender.com/auth/confluence';
-    });
-
-    loadConfluenceSpacesBtn.addEventListener('click', loadConfluenceSpaces);
-    loadConfluencePagesBtn.addEventListener('click', loadConfluencePages);
-
-    createConfluencePageBtn.addEventListener('click', () => {
-      confluencePageModalOverlay.classList.add('active');
-    });
-
-    closeConfluencePageModalBtn.addEventListener('click', () => {
-      confluencePageModalOverlay.classList.remove('active');
-    });
-    cancelConfluencePageBtn.addEventListener('click', () => {
-      confluencePageModalOverlay.classList.remove('active');
-    });
-
-    createConfluencePageModalBtn.addEventListener('click', async () => {
-      const spaceKey = document.getElementById('confluenceSpaceKey').value;
-      const title = document.getElementById('confluencePageTitle').value;
-      const content = document.getElementById('confluencePageContent').value;
-
-      if (!spaceKey || !title || !content) {
-        alert('Space Key, Title, and Content are required.');
-        return;
-      }
-      try {
-        const res = await fetch('/api/confluence/pages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ spaceKey, title, content })
-        });
-        if (!res.ok) throw new Error('Failed to create Confluence page');
-        alert('Confluence page created successfully!');
-        confluencePageModalOverlay.classList.remove('active');
-        loadConfluencePages();
-      } catch (err) {
-        console.error(err);
-        alert('Error creating Confluence page');
-      }
-    });
-
-    async function loadConfluenceSpaces() {
-      try {
-        const res = await fetch('/api/confluence/spaces');
-        if (!res.ok) throw new Error('Failed to fetch Confluence spaces');
-        const data = await res.json();
-        confluenceSpacesContainer.innerHTML = '';
-        if (Array.isArray(data.results) && data.results.length > 0) {
-          data.results.forEach(space => {
-            const item = document.createElement('div');
-            item.classList.add('confluence-item');
-            item.innerHTML = `
-              <div class="confluence-space-key">${space.key}</div>
-              <div class="confluence-space-name">${space.name}</div>
-            `;
-            confluenceSpacesContainer.appendChild(item);
-          });
-        } else {
-          confluenceSpacesContainer.innerHTML = '<p>No spaces found.</p>';
-        }
-      } catch (error) {
-        alert('Error loading Confluence spaces');
-        console.error(error);
-      }
-    }
-
-    async function loadConfluencePages() {
-      try {
-        const res = await fetch('/api/confluence/pages');
-        if (!res.ok) throw new Error('Failed to fetch Confluence pages');
-        const data = await res.json();
-        confluencePagesContainer.innerHTML = '';
-        if (Array.isArray(data.results) && data.results.length > 0) {
-          data.results.forEach(page => {
-            const item = document.createElement('div');
-            item.classList.add('confluence-item');
-            item.innerHTML = `
-              <div class="confluence-page-title">${page.title}</div>
-              <div class="confluence-page-status">ID: ${page.id}</div>
-            `;
-            confluencePagesContainer.appendChild(item);
-          });
-        } else {
-          confluencePagesContainer.innerHTML = '<p>No pages found.</p>';
-        }
-      } catch (error) {
-        alert('Error loading Confluence pages');
-        console.error(error);
-      }
-    }
-
-    async function checkConfluenceStatus() {
-      try {
-        const res = await fetch('/api/confluence/status');
-        const status = await res.json();
-        if (status.connected) {
-          connectConfluenceBtn.textContent = 'Connected to Confluence';
-        } else {
-          connectConfluenceBtn.textContent = 'Connect Confluence';
-        }
-      } catch (err) {
-        console.error("Error checking Confluence status:", err);
-      }
-    }
-
-    // On page load, check connections
-    window.addEventListener('load', () => {
-      checkJiraStatus();
-      checkConfluenceStatus();
     });
   </script>
 </body>

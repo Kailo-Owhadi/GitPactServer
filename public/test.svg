@@ -1,0 +1,56 @@
+<!-- GitPact Logo Sample (SVG) -->
+<svg 
+    version="1.1" 
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 200 200"
+    width="200"
+    height="200"
+>
+  <!-- Circular background in Git-like color -->
+  <circle cx="100" cy="100" r="100" fill="#F05133" />
+
+  <!-- Git-branch motif (white lines + commit circles) -->
+  <line 
+    x1="60" y1="60" 
+    x2="60" y2="140" 
+    stroke="#FFFFFF" 
+    stroke-width="6" 
+    stroke-linecap="round" 
+  />
+  <circle cx="60" cy="60" r="8" fill="#FFFFFF" />
+  <circle cx="60" cy="140" r="8" fill="#FFFFFF" />
+  <line 
+    x1="60" y1="60" 
+    x2="100" y2="100" 
+    stroke="#FFFFFF" 
+    stroke-width="6" 
+    stroke-linecap="round" 
+  />
+  <circle cx="100" cy="100" r="8" fill="#FFFFFF" />
+
+  <!-- Simple handshake-like shape on the right -->
+  <path 
+    d="M130,110 
+       Q135,95 150,95 
+       Q165,95 170,110 
+       L170,120 
+       Q165,135 150,135 
+       Q135,135 130,120Z" 
+    fill="none" 
+    stroke="#FFFFFF" 
+    stroke-width="6"
+  />
+
+  <!-- Brand name (text) -->
+  <text 
+    x="50%" 
+    y="185" 
+    fill="#FFFFFF" 
+    text-anchor="middle" 
+    font-size="24" 
+    font-family="Arial, sans-serif" 
+    font-weight="bold"
+  >
+    GitPact
+  </text>
+</svg>

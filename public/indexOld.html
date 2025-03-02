@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitPact - Tech Freelance Contract Management</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" defer></script>
+  <style>
+    :root {
+      --primary: #10B981;
+      --secondary: #3B82F6;
+      --dark: #111827;
+      --darker: #0A0F1A;
+      --gray-800: #1F2937;
+      --gray-700: #374151;
+      --gray-600: #4B5563;
+      --gray-400: #9CA3AF;
+      --light: #F3F4F6;
+      --danger: #EF4444;
+      --success: #10B981;
+      --warning: #F59E0B;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      background-color: var(--dark);
+      color: #FFFFFF;
+      overflow-x: hidden;
+    }
+    a {
+      color: var(--secondary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #ffffff;
+    }
+    button {
+      cursor: pointer;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gray-700);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-600);
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .flex {
+      display: flex;
+      align-items: center;
+    }
+    .justify-between {
+      justify-content: space-between;
+    }
+    .justify-center {
+      justify-content: center;
+    }
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    .mt-1 {
+      margin-top: 0.25rem;
+    }
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+    .mt-4 {
+      margin-top: 1rem;
+    }
+    .mt-6 {
+      margin-top: 1.5rem;
+    }
+    .mt-8 {
+      margin-top: 2rem;
+    }
+    .mb-1 {
+      margin-bottom: 0.25rem;
+    }
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    .mb-8 {
+      margin-bottom: 2rem;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .rounded {
+      border-radius: 0.5rem;
+    }
+    .rounded-full {
+      border-radius: 9999px;
+    }
+    .p-1 {
+      padding: 0.25rem;
+    }
+    .p-2 {
+      padding: 0.5rem;
+    }
+    .p-3 {
+      padding: 0.75rem;
+    }
+    .p-4 {
+      padding: 1rem;
+    }
+    .p-6 {
+      padding: 1.5rem;
+    }
+    .p-8 {
+      padding: 2rem;
+    }
+    .shadow {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    .hidden {
+      display: none !important;
+    }
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      border-radius: 0.25rem;
+      color: #fff;
+      background-color: var(--gray-700);
+    }
+    nav {
+      background-color: var(--darker);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 50;
+    }
+    nav .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+    }
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      opacity: 0.6;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--gray-400);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #fff;
+    }
+    .btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      color: #fff;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .sidebar {
+      width: 250px;
+      background-color: var(--gray-800);
+      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 1rem;
+      display: none;
+    }
+    .sidebar.active {
+      display: block;
+    }
+    .sidebar h3 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+    .sidebar ul {
+      list-style-type: none;
+    }
+    .sidebar li {
+      margin-bottom: 0.5rem;
+    }
+    .sidebar li a {
+      color: var(--gray-400);
+      padding: 0.5rem 0.75rem;
+      display: block;
+      border-radius: 0.25rem;
+    }
+    .sidebar li a:hover,
+    .sidebar li a.active {
+      background-color: var(--gray-700);
+      color: #fff;
+    }
+    .app-container {
+      margin-top: 4rem;
+      padding: 1rem 2rem;
+      transition: margin-left 0.3s;
+      margin-left: 0px;
+    }
+    .app-container.with-sidebar {
+      margin-left: 250px;
+    }
+    .view {
+      display: none;
+      margin-bottom: 3rem;
+    }
+    .view.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    .hero-section {
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      background: radial-gradient(circle at center, var(--gray-800), var(--dark));
+    }
+    .hero-section h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-section p {
+      color: var(--gray-400);
+      font-size: 1.25rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+    .card {
+      background: var(--gray-800);
+      border-radius: 0.5rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card:hover {
+      background: var(--gray-700);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--gray-400);
+      margin-bottom: 0.75rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+    .feature-card {
+      background-color: var(--gray-800);
+      padding: 2rem;
+      border-radius: 1rem;
+      transition: transform 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    .feature-icon {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      width: fit-content;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .feature-icon i {
+      color: #fff;
+    }
+    .feature-card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: #fff;
+    }
+    .feature-card p {
+      color: var(--gray-400);
+      line-height: 1.6;
+    }
+    .integrations {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .integration-item {
+      background-color: var(--gray-800);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.3s;
+    }
+    .integration-item:hover {
+      transform: translateY(-5px);
+    }
+    .integration-item i {
+      font-size: 2rem;
+      color: var(--gray-400);
+    }
+    .integration-item span {
+      color: var(--gray-200);
+      font-weight: 500;
+    }
+    footer {
+      background: var(--darker);
+      padding: 2rem;
+      text-align: center;
+      color: var(--gray-400);
+      margin-top: 2rem;
+    }
+    footer a {
+      color: var(--secondary);
+    }
+    .contracts-view .contract-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .contract-card {
+      background-color: var(--gray-700);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      transition: background 0.2s;
+    }
+    .contract-card:hover {
+      background-color: var(--gray-600);
+    }
+    .contract-card h4 {
+      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+    }
+    .contract-card .status {
+      font-size: 0.75rem;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      display: inline-block;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .status-active {
+      background-color: var(--success);
+    }
+    .status-review {
+      background-color: var(--secondary);
+    }
+    .status-closed {
+      background-color: var(--danger);
+    }
+    .status-hold {
+      background-color: var(--warning);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--gray-300);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background-color: var(--gray-800);
+      border: 1px solid var(--gray-700);
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+    .btn-primary {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      min-width: 700px;
+    }
+    .table thead {
+      background-color: var(--gray-700);
+    }
+    .table th,
+    .table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-600);
+    }
+    .table th {
+      color: var(--gray-200);
+    }
+    .table tr:hover {
+      background-color: var(--gray-700);
+    }
+    .commit-list,
+    .jira-task-list,
+    .compliance-list,
+    .sast-list {
+      list-style: none;
+      margin-top: 1rem;
+    }
+    .commit-item,
+    .jira-task-item,
+    .compliance-item,
+    .sast-item {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .commit-message,
+    .jira-task-title,
+    .compliance-title,
+    .sast-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .commit-meta,
+    .jira-task-meta,
+    .compliance-meta,
+    .sast-meta {
+      color: var(--gray-400);
+      font-size: 0.8rem;
+    }
+    .highlight {
+      color: var(--primary);
+    }
+    .collapsible {
+      background: var(--gray-800);
+      cursor: pointer;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: background 0.3s;
+    }
+    .collapsible:hover {
+      background: var(--gray-700);
+    }
+    .collapsible.active .collapsible-content {
+      display: block;
+    }
+    .collapsible-content {
+      display: none;
+      padding: 1rem;
+      border-top: 1px solid var(--gray-600);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <i data-feather="git-branch"></i>
+        GitPact
+      </div>
+      <div class="nav-links">
+        <a href="#home" onclick="showLandingPage()">Home</a>
+        <a href="#features" onclick="scrollToId('landing-features')">Features</a>
+        <a href="#integrations" onclick="scrollToId('landing-integrations')">Integrations</a>
+        <a href="#" onclick="openApp()">Demo App</a>
+        <button class="btn" onclick="showSignupModal()">Get Started</button>
+      </div>
+    </div>
+  </nav>
+  <div id="landing-page">
+    <section class="hero-section">
+      <h1>Manage Tech Freelance Contracts Seamlessly</h1>
+      <p>The all-in-one platform for managing contracts with built-in integrations for GitHub and Jira, dynamic contract delivery, compliance tools, and more.</p><p> <bold>Note: This is just a demo vision page. MVP in progress</bold></p>
+      <button class="btn" onclick="showSignupModal()">Start Free Trial</button>
+    </section>
+    <section class="container" id="landing-features">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="code"></i>
+          </div>
+          <h3>Smart Contract Management</h3>
+          <p>Streamline your contract workflow with automated templates, milestone tracking, and payment integration.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="git-merge"></i>
+          </div>
+          <h3>Development Tools Integration</h3>
+          <p>Seamlessly connect with your favorite development tools and track progress in real-time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="shield"></i>
+          </div>
+          <h3>Secure &amp; Compliant</h3>
+          <p>Enterprise-grade security with automated compliance checks and audit trails.</p>
+        </div>
+      </div>
+    </section>
+    <section class="container integrations" id="landing-integrations">
+      <h2>Powerful Integrations</h2>
+      <p>Connect your existing tools for a seamless workflow.</p>
+      <div class="integration-grid">
+        <div class="integration-item">
+          <i data-feather="github"></i>
+          <span>GitHub</span>
+        </div>
+        <div class="integration-item">
+          <i data-feather="gitlab"></i>
+          <span>GitLab</span>
+        </div>
+        <div class="integration-item">
+          <i data-feather="trello"></i>
+          <span>Jira</span>
+        </div>
+        <div class="integration-item">
+          <i data-feather="bar-chart-2"></i>
+          <span>SonarQube</span>
+        </div>
+        <div class="integration-item">
+          <i data-feather="clock"></i>
+          <span>Time Tracking</span>
+        </div>
+        <div class="integration-item">
+          <i data-feather="dollar-sign"></i>
+          <span>Payments</span>
+        </div>
+      </div>
+    </section>
+    <section class="container text-center mb-8">
+      <h2>Take Control of Your Freelance Contracts</h2>
+      <p class="mt-2 mb-4">Experience quick onboarding, secure code handoff, and frictionless payments.</p>
+      <button class="btn" onclick="showSignupModal()">Create an Account</button>
+    </section>
+    <footer>
+      <p>&copy; 2025 GitPact. All Rights Reserved. &nbsp;|&nbsp; <a href="#terms">Terms of Service</a> &nbsp;|&nbsp; <a href="#privacy">Privacy Policy</a></p>
+    </footer>
+  </div>
+  <div class="sidebar" id="app-sidebar">
+    <h3>GitPact Demo</h3>
+    <ul>
+      <li><a href="#" id="nav-contracts" onclick="showView('contractsView')">Contracts</a></li>
+      <li><a href="#" id="nav-github" onclick="showView('githubView')">GitHub</a></li>
+      <li><a href="#" id="nav-jira" onclick="showView('jiraView')">Jira Board</a></li>
+      <li><a href="#" id="nav-payments" onclick="showView('paymentsView')">Payments</a></li>
+      <li><a href="#" id="nav-compliance" onclick="showView('complianceView')">Compliance</a></li>
+      <li><a href="#" id="nav-security" onclick="showView('securityView')">Security</a></li>
+      <li><a href="#" id="nav-dashboard" onclick="showView('dashboardView')">Metrics</a></li>
+      <li><a href="#" id="nav-logout" onclick="closeApp()">Exit Demo</a></li>
+    </ul>
+  </div>
+  <div class="app-container" id="app-container">
+    <div class="view fade-in" id="contractsView">
+      <h2>Contracts</h2>
+      <p class="mb-4">Manage all your freelance and vendor contracts in one place.</p>
+      <div class="mb-2">
+        <button class="btn-primary" onclick="openNewContractModal()">New Contract</button>
+      </div>
+      <div class="contract-list" id="contractList"></div>
+    </div>
+    <div class="view fade-in" id="githubView">
+      <h2>GitHub Activity</h2>
+      <p class="mb-4">Recent commits from connected repositories.</p>
+      <ul class="commit-list" id="githubCommitList"></ul>
+    </div>
+    <div class="view fade-in" id="jiraView">
+      <h2>Jira Board</h2>
+      <p class="mb-4">View tasks and issues organized by status.</p>
+      <div class="flex flex-wrap" style="gap:1rem;">
+        <div class="card" style="min-width:250px;">
+          <h3>To Do</h3>
+          <ul class="jira-task-list" id="jiraToDoList"></ul>
+        </div>
+        <div class="card" style="min-width:250px;">
+          <h3>In Progress</h3>
+          <ul class="jira-task-list" id="jiraInProgressList"></ul>
+        </div>
+        <div class="card" style="min-width:250px;">
+          <h3>Review</h3>
+          <ul class="jira-task-list" id="jiraReviewList"></ul>
+        </div>
+        <div class="card" style="min-width:250px;">
+          <h3>Done</h3>
+          <ul class="jira-task-list" id="jiraDoneList"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="view fade-in" id="paymentsView">
+      <h2>Payments</h2>
+      <p class="mb-4">Manage invoice payments, milestone releases, and track transactions.</p>
+      <div>
+        <button class="btn-primary" onclick="openNewInvoiceModal()">Create Invoice</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="table" id="paymentsTable">
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Contract</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date Issued</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="view fade-in" id="complianceView">
+      <h2>Compliance</h2>
+      <p class="mb-4">Manage NDAs, IP clauses, and automated compliance checks.</p>
+      <div class="card">
+        <h3>NDAs</h3>
+        <ul class="compliance-list" id="ndaList"></ul>
+      </div>
+      <div class="card mt-4">
+        <h3>Copyright Clauses</h3>
+        <ul class="compliance-list" id="copyrightList"></ul>
+      </div>
+    </div>
+    <div class="view fade-in" id="securityView">
+      <h2>Security</h2>
+      <p class="mb-4">Manage repo access, mandatory NDAs, offboarding procedures, SAST scanning, etc.</p>
+      <div class="collapsible">
+        <h3 class="mb-2">Repo Access Policy</h3>
+        <div class="collapsible-content">
+          <p>List of users with current repo access, auto-revoke settings, etc.</p>
+        </div>
+      </div>
+      <div class="collapsible">
+        <h3 class="mb-2">Automated SAST Reports</h3>
+        <div class="collapsible-content">
+          <ul class="sast-list" id="sastList"></ul>
+        </div>
+      </div>
+      <div class="collapsible">
+        <h3 class="mb-2">Offboarding Checklist</h3>
+        <div class="collapsible-content">
+          <ul>
+            <li>Revoke repository access</li>
+            <li>Disable Slack user or relevant communications</li>
+            <li>Retrieve final code deliverables</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="view fade-in" id="dashboardView">
+      <h2>Metrics Dashboard</h2>
+      <p class="mb-4">Performance, code coverage, revenue, tasks completed, etc.</p>
+      <div class="flex flex-wrap" style="gap:1rem;">
+        <div class="card" style="min-width:200px;">
+          <div class="card-title">Code Coverage</div>
+          <div class="metric-value" id="metricCoverage" style="font-size:2rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; color: transparent;">
+            0%
+          </div>
+        </div>
+        <div class="card" style="min-width:200px;">
+          <div class="card-title">Monthly Revenue</div>
+          <div class="metric-value" id="metricRevenue" style="font-size:2rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; color: transparent;">
+            $0
+          </div>
+        </div>
+        <div class="card" style="min-width:200px;">
+          <div class="card-title">Active Sprints</div>
+          <div class="metric-value" id="metricSprints" style="font-size:2rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; color: transparent;">
+            0
+          </div>
+        </div>
+        <div class="card" style="min-width:200px;">
+          <div class="card-title">Tasks Completed</div>
+          <div class="metric-value" id="metricTasks" style="font-size:2rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; color: transparent;">
+            0
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="signupModal" class="hidden" style="
+    position: fixed; 
+    top:0; left:0; 
+    width:100%; 
+    height:100%; 
+    background: rgba(0,0,0,0.7); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 999;
+  ">
+    <div style="background: var(--gray-800); padding: 2rem; border-radius: 0.5rem; max-width: 500px; width: 100%;">
+      <h2 class="mb-2">Sign Up</h2>
+      <p class="mb-4">Create an account to manage your freelance contracts.</p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Enter a password" />
+      </div>
+      <div class="text-right">
+        <button class="btn-primary" onclick="fakeSignup()">Sign Up</button>
+        <button class="btn-primary" style="background-color: var(--gray-700);" onclick="closeSignupModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="newContractModal" class="hidden" style="
+    position: fixed; 
+    top:0; left:0; 
+    width:100%; 
+    height:100%; 
+    background: rgba(0,0,0,0.7); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 999;
+  ">
+    <div style="background: var(--gray-800); padding: 2rem; border-radius: 0.5rem; max-width: 600px; width: 100%;">
+      <h2 class="mb-4">New Contract</h2>
+      <div class="form-group">
+        <label>Contract Name</label>
+        <input type="text" id="contractName" placeholder="e.g. Frontend Development Contract" />
+      </div>
+      <div class="form-group">
+        <label>Description / Scope</label>
+        <textarea id="contractDescription" rows="3" placeholder="Describe the scope, timeline, and key deliverables"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Value (USD)</label>
+        <input type="number" id="contractValue" placeholder="e.g. 25000" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="contractStatus">
+          <option value="active">Active</option>
+          <option value="review">In Review</option>
+          <option value="closed">Closed</option>
+          <option value="hold">On Hold</option>
+        </select>
+      </div>
+      <div class="text-right">
+        <button class="btn-primary" onclick="saveContract()">Save</button>
+        <button class="btn-primary" style="background-color: var(--gray-700);" onclick="closeNewContractModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="newInvoiceModal" class="hidden" style="
+    position: fixed; 
+    top:0; left:0; 
+    width:100%; 
+    height:100%; 
+    background: rgba(0,0,0,0.7); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 999;
+  ">
+    <div style="background: var(--gray-800); padding: 2rem; border-radius: 0.5rem; max-width: 500px; width: 100%;">
+      <h2 class="mb-4">New Invoice</h2>
+      <div class="form-group">
+        <label>Contract</label>
+        <select id="invoiceContract"></select>
+      </div>
+      <div class="form-group">
+        <label>Amount (USD)</label>
+        <input type="number" id="invoiceAmount" placeholder="e.g. 2000" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="invoiceStatus">
+          <option value="Unpaid">Unpaid</option>
+          <option value="Paid">Paid</option>
+          <option value="Past Due">Past Due</option>
+        </select>
+      </div>
+      <div class="text-right">
+        <button class="btn-primary" onclick="saveInvoice()">Save</button>
+        <button class="btn-primary" style="background-color: var(--gray-700);" onclick="closeNewInvoiceModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      feather.replace();
+    });
+    function scrollToId(id) {
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+    function showLandingPage() {
+      document.getElementById("landing-page").style.display = "block";
+      document.getElementById("app-sidebar").classList.remove("active");
+      document.getElementById("app-container").classList.remove("with-sidebar");
+      const views = document.querySelectorAll(".view");
+      views.forEach(v => v.classList.remove("active"));
+    }
+    function openApp() {
+      document.getElementById("landing-page").style.display = "none";
+      document.getElementById("app-sidebar").classList.add("active");
+      document.getElementById("app-container").classList.add("with-sidebar");
+      showView("contractsView");
+    }
+    function closeApp() {
+      document.getElementById("landing-page").style.display = "block";
+      document.getElementById("app-sidebar").classList.remove("active");
+      document.getElementById("app-container").classList.remove("with-sidebar");
+      const views = document.querySelectorAll(".view");
+      views.forEach(v => v.classList.remove("active"));
+    }
+    function showView(viewId) {
+      const sidebarLinks = document.querySelectorAll(".sidebar ul li a");
+      sidebarLinks.forEach(link => {
+        link.classList.remove("active");
+      });
+      const navLink = document.querySelector(`#nav-${viewId.replace("View","").toLowerCase()}`);
+      if(navLink) navLink.classList.add("active");
+      const views = document.querySelectorAll(".view");
+      views.forEach(v => v.classList.remove("active"));
+      const viewEl = document.getElementById(viewId);
+      if(viewEl) viewEl.classList.add("active");
+    }
+    function showSignupModal() {
+      document.getElementById("signupModal").classList.remove("hidden");
+    }
+    function closeSignupModal() {
+      document.getElementById("signupModal").classList.add("hidden");
+    }
+    function fakeSignup() {
+      const email = document.getElementById("signupEmail").value;
+      const pass = document.getElementById("signupPassword").value;
+      alert("Signup complete! (Fake) \nEmail: " + email + "\nPassword: " + pass);
+      closeSignupModal();
+    }
+    function openNewContractModal() {
+      document.getElementById("newContractModal").classList.remove("hidden");
+    }
+    function closeNewContractModal() {
+      document.getElementById("newContractModal").classList.add("hidden");
+    }
+    function openNewInvoiceModal() {
+      document.getElementById("newInvoiceModal").classList.remove("hidden");
+    }
+    function closeNewInvoiceModal() {
+      document.getElementById("newInvoiceModal").classList.add("hidden");
+    }
+  </script>
+  <script>
+    let contractData = [
+      {
+        id: 1,
+        name: "Frontend Dev Contract",
+        description: "React Native Mobile App Development",
+        value: 48000,
+        status: "active"
+      },
+      {
+        id: 2,
+        name: "Backend API Development",
+        description: "Node.js Microservices Architecture",
+        value: 32000,
+        status: "review"
+      },
+      {
+        id: 3,
+        name: "Full-Stack Website Overhaul",
+        description: "Vue.js + Express for E-commerce platform",
+        value: 20000,
+        status: "hold"
+      }
+    ];
+    let githubCommits = [
+      {
+        message: "Update user authentication flow",
+        time: "Committed 2 hours ago"
+      },
+      {
+        message: "Fix responsive layout issues",
+        time: "Committed 4 hours ago"
+      },
+      {
+        message: "Add new Payment module",
+        time: "Committed 1 day ago"
+      },
+      {
+        message: "Refactor contract management logic",
+        time: "Committed 2 days ago"
+      }
+    ];
+    let jiraTasks = {
+      todo: [
+        {
+          title: "Implement OAuth 2.0",
+          meta: "High Priority"
+        },
+        {
+          title: "Design System Updates",
+          meta: "Medium Priority"
+        }
+      ],
+      inProgress: [
+        {
+          title: "API Documentation",
+          meta: "In Review"
+        }
+      ],
+      review: [
+        {
+          title: "Refactor Frontend Components",
+          meta: "Awaiting Approval"
+        },
+        {
+          title: "Code Coverage Analysis",
+          meta: "Needs QA"
+        }
+      ],
+      done: [
+        {
+          title: "User Dashboard v1",
+          meta: "Completed"
+        },
+        {
+          title: "Onboarding Flow",
+          meta: "Completed"
+        }
+      ]
+    };
+    let invoiceData = [
+      {
+        id: 1001,
+        contractId: 1,
+        amount: 8000,
+        status: "Unpaid",
+        dateIssued: "2025-01-10"
+      },
+      {
+        id: 1002,
+        contractId: 2,
+        amount: 12000,
+        status: "Paid",
+        dateIssued: "2025-01-15"
+      },
+      {
+        id: 1003,
+        contractId: 3,
+        amount: 5000,
+        status: "Past Due",
+        dateIssued: "2025-01-18"
+      }
+    ];
+    let ndaList = [
+      {
+        title: "NDA #101: Frontend Dev",
+        dateSigned: "2025-01-08",
+        parties: "Company ABC & Freelancer John Doe"
+      },
+      {
+        title: "NDA #102: Backend APIs",
+        dateSigned: "2025-01-12",
+        parties: "Company XYZ & Dev Studio"
+      }
+    ];
+    let copyrightList = [
+      {
+        title: "License Clause - Project Omega",
+        meta: "Owner: Company ABC, Developer: John Doe"
+      },
+      {
+        title: "Open Source Attribution - MIT",
+        meta: "For utilities integrated from open-source libs"
+      }
+    ];
+    let sastReports = [
+      {
+        title: "SAST Report #4721",
+        meta: "3 vulnerabilities found (1 high, 2 medium)"
+      },
+      {
+        title: "SAST Report #4722",
+        meta: "No new vulnerabilities"
+      }
+    ];
+    let metrics = {
+      coverage: 94,
+      revenue: 142000,
+      sprints: 32,
+      tasksDone: 127
+    };
+    function renderContracts() {
+      const contractListEl = document.getElementById("contractList");
+      if(!contractListEl) return;
+      contractListEl.innerHTML = "";
+      contractData.forEach(contract => {
+        const div = document.createElement("div");
+        div.className = "contract-card";
+        let statusClass = "";
+        switch(contract.status) {
+          case "active":
+            statusClass = "status-active";
+            break;
+          case "review":
+            statusClass = "status-review";
+            break;
+          case "closed":
+            statusClass = "status-closed";
+            break;
+          case "hold":
+            statusClass = "status-hold";
+            break;
+        }
+        div.innerHTML = `
+          <div class="status ${statusClass}">
+            ${contract.status.toUpperCase()}
+          </div>
+          <h4>${contract.name}</h4>
+          <p class="mt-1 mb-2" style="color: var(--gray-400); font-size:0.9rem;">
+            ${contract.description}
+          </p>
+          <div style="color: var(--gray-400); font-size:0.8rem;">
+            Value: $${contract.value.toLocaleString()}
+          </div>
+        `;
+        contractListEl.appendChild(div);
+      });
+    }
+    function renderGitHubCommits() {
+      const githubList = document.getElementById("githubCommitList");
+      if(!githubList) return;
+      githubList.innerHTML = "";
+      githubCommits.forEach(commit => {
+        const li = document.createElement("li");
+        li.className = "commit-item";
+        li.innerHTML = `
+          <i data-feather="git-commit"></i>
+          <div>
+            <div class="commit-message">${commit.message}</div>
+            <small class="commit-meta">${commit.time}</small>
+          </div>
+        `;
+        githubList.appendChild(li);
+      });
+      feather.replace();
+    }
+    function renderJiraBoard() {
+      const todoList = document.getElementById("jiraToDoList");
+      const inProgressList = document.getElementById("jiraInProgressList");
+      const reviewList = document.getElementById("jiraReviewList");
+      const doneList = document.getElementById("jiraDoneList");
+      if(!todoList || !inProgressList || !reviewList || !doneList) return;
+      todoList.innerHTML = "";
+      inProgressList.innerHTML = "";
+      reviewList.innerHTML = "";
+      doneList.innerHTML = "";
+      jiraTasks.todo.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "jira-task-item";
+        li.innerHTML = `
+          <div>
+            <div class="jira-task-title">${task.title}</div>
+            <small class="jira-task-meta">${task.meta}</small>
+          </div>
+        `;
+        todoList.appendChild(li);
+      });
+      jiraTasks.inProgress.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "jira-task-item";
+        li.innerHTML = `
+          <div>
+            <div class="jira-task-title">${task.title}</div>
+            <small class="jira-task-meta">${task.meta}</small>
+          </div>
+        `;
+        inProgressList.appendChild(li);
+      });
+      jiraTasks.review.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "jira-task-item";
+        li.innerHTML = `
+          <div>
+            <div class="jira-task-title">${task.title}</div>
+            <small class="jira-task-meta">${task.meta}</small>
+          </div>
+        `;
+        reviewList.appendChild(li);
+      });
+      jiraTasks.done.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "jira-task-item";
+        li.innerHTML = `
+          <div>
+            <div class="jira-task-title">${task.title}</div>
+            <small class="jira-task-meta">${task.meta}</small>
+          </div>
+        `;
+        doneList.appendChild(li);
+      });
+    }
+    function renderInvoices() {
+      const paymentsTable = document.getElementById("paymentsTable").querySelector("tbody");
+      if(!paymentsTable) return;
+      paymentsTable.innerHTML = "";
+      invoiceData.forEach(inv => {
+        const contract = contractData.find(c => c.id === inv.contractId);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>#${inv.id}</td>
+          <td>${contract ? contract.name : "Unknown"}</td>
+          <td>$${inv.amount.toLocaleString()}</td>
+          <td>${inv.status}</td>
+          <td>${inv.dateIssued}</td>
+          <td>
+            <button class="btn-primary" 
+              style="padding:0.25rem 0.5rem; font-size:0.75rem;"
+              onclick="simulatePayment(${inv.id})"
+            >
+              Pay
+            </button>
+          </td>
+        `;
+        paymentsTable.appendChild(tr);
+      });
+    }
+    function renderCompliance() {
+      const ndaUl = document.getElementById("ndaList");
+      const copyrightUl = document.getElementById("copyrightList");
+      if(!ndaUl || !copyrightUl) return;
+      ndaUl.innerHTML = "";
+      ndaList.forEach(nda => {
+        const li = document.createElement("li");
+        li.className = "compliance-item";
+        li.innerHTML = `
+          <i data-feather="file-text"></i>
+          <div>
+            <div class="compliance-title">${nda.title}</div>
+            <small class="compliance-meta">Signed on: ${nda.dateSigned} | ${nda.parties}</small>
+          </div>
+        `;
+        ndaUl.appendChild(li);
+      });
+      copyrightUl.innerHTML = "";
+      copyrightList.forEach(cp => {
+        const li = document.createElement("li");
+        li.className = "compliance-item";
+        li.innerHTML = `
+          <i data-feather="file-text"></i>
+          <div>
+            <div class="compliance-title">${cp.title}</div>
+            <small class="compliance-meta">${cp.meta}</small>
+          </div>
+        `;
+        copyrightUl.appendChild(li);
+      });
+      feather.replace();
+    }
+    function renderSecurity() {
+      const sastUl = document.getElementById("sastList");
+      if(!sastUl) return;
+      sastUl.innerHTML = "";
+      sastReports.forEach(report => {
+        const li = document.createElement("li");
+        li.className = "sast-item";
+        li.innerHTML = `
+          <i data-feather="alert-triangle"></i>
+          <div>
+            <div class="sast-title">${report.title}</div>
+            <small class="sast-meta">${report.meta}</small>
+          </div>
+        `;
+        sastUl.appendChild(li);
+      });
+      feather.replace();
+    }
+    function renderMetrics() {
+      const covEl = document.getElementById("metricCoverage");
+      const revEl = document.getElementById("metricRevenue");
+      const sprEl = document.getElementById("metricSprints");
+      const tskEl = document.getElementById("metricTasks");
+      if(covEl) covEl.textContent = metrics.coverage + "%";
+      if(revEl) revEl.textContent = "$" + metrics.revenue.toLocaleString();
+      if(sprEl) sprEl.textContent = metrics.sprints;
+      if(tskEl) tskEl.textContent = metrics.tasksDone;
+    }
+    function saveContract() {
+      const name = document.getElementById("contractName").value;
+      const desc = document.getElementById("contractDescription").value;
+      const val = document.getElementById("contractValue").value;
+      const stat = document.getElementById("contractStatus").value;
+      if(!name || !val) {
+        alert("Please fill in all required fields (Name, Value).");
+        return;
+      }
+      const newId = contractData.length > 0
+        ? Math.max(...contractData.map(c => c.id)) + 1
+        : 1;
+      const newContract = {
+        id: newId,
+        name: name,
+        description: desc,
+        value: parseFloat(val),
+        status: stat
+      };
+      contractData.push(newContract);
+      renderContracts();
+      closeNewContractModal();
+      document.getElementById("contractName").value = "";
+      document.getElementById("contractDescription").value = "";
+      document.getElementById("contractValue").value = "";
+      document.getElementById("contractStatus").value = "active";
+    }
+    function saveInvoice() {
+      const contractId = parseInt(document.getElementById("invoiceContract").value, 10);
+      const amount = parseFloat(document.getElementById("invoiceAmount").value);
+      const status = document.getElementById("invoiceStatus").value;
+      if(!contractId || !amount) {
+        alert("Please fill in all required fields (Contract, Amount).");
+        return;
+      }
+      const newId = invoiceData.length > 0
+        ? Math.max(...invoiceData.map(i => i.id)) + 1
+        : 1001;
+      const newInvoice = {
+        id: newId,
+        contractId: contractId,
+        amount: amount,
+        status: status,
+        dateIssued: new Date().toISOString().substring(0,10)
+      };
+      invoiceData.push(newInvoice);
+      renderInvoices();
+      closeNewInvoiceModal();
+      document.getElementById("invoiceAmount").value = "";
+      document.getElementById("invoiceStatus").value = "Unpaid";
+    }
+    function simulatePayment(invoiceId) {
+      const inv = invoiceData.find(i => i.id === invoiceId);
+      if(!inv) return;
+      inv.status = (inv.status === "Paid") ? "Unpaid" : "Paid";
+      renderInvoices();
+    }
+    function initCollapsibles() {
+      const collapsibles = document.querySelectorAll(".collapsible");
+      collapsibles.forEach(col => {
+        col.addEventListener("click", function() {
+          this.classList.toggle("active");
+          const content = this.querySelector(".collapsible-content");
+          if(content) {
+            if(this.classList.contains("active")) {
+              content.style.display = "block";
+            } else {
+              content.style.display = "none";
+            }
+          }
+        });
+      });
+    }
+    function initApp() {
+      renderContracts();
+      renderGitHubCommits();
+      renderJiraBoard();
+      renderInvoices();
+      renderCompliance();
+      renderSecurity();
+      renderMetrics();
+      initCollapsibles();
+      const invoiceContractSelect = document.getElementById("invoiceContract");
+      if(invoiceContractSelect) {
+        invoiceContractSelect.innerHTML = "";
+        contractData.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c.id;
+          opt.textContent = c.name;
+          invoiceContractSelect.appendChild(opt);
+        });
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      initApp();
+    });
+  </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsQgbrH2l5WK2NCLGfmtF6-IgQ-BjizdE",
+      authDomain: "gitpact-f2b2b.firebaseapp.com",
+      projectId: "gitpact-f2b2b",
+      storageBucket: "gitpact-f2b2b.firebasestorage.app",
+      messagingSenderId: "843263702835",
+      appId: "1:843263702835:web:164cb7c86628afc1edb046",
+      measurementId: "G-XT58L6K0C1"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</body>
+</html>

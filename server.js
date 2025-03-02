@@ -68,7 +68,6 @@ app.get('/auth/jira/callback', async (req, res) => {
       req.session.jiraSiteUrl = sites[0].url;
       console.log("Stored Jira site info:", sites[0]);
     }
-    // After connection, redirect back to your projects page.
     console.log("Redirecting to projects1.html");
     res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
@@ -77,8 +76,9 @@ app.get('/auth/jira/callback', async (req, res) => {
   }
 });
 
-// -------------------- Additional Endpoint --------------------
-// This endpoint returns whether the user is connected to Jira.
+// -------------------- Additional Endpoints --------------------
+
+// Endpoint to check Jira connection status
 app.get('/api/jira/status', (req, res) => {
   if (req.session.jiraAccessToken && req.session.jiraSiteId) {
     return res.json({ connected: true });
@@ -86,9 +86,47 @@ app.get('/api/jira/status', (req, res) => {
   return res.json({ connected: false });
 });
 
-// -------------------- API Endpoints --------------------
+// GET /api/jira/projects – Fetch Jira projects
+app.get('/api/jira/projects', async (req, res) => {
+  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+    return res.status(401).json({ error: 'User not authenticated with Jira' });
+  }
+  try {
+    const projectsUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project`;
+    const response = await axios.get(projectsUrl, {
+      headers: {
+        Authorization: `Bearer ${req.session.jiraAccessToken}`,
+        'Accept': 'application/json'
+      }
+    });
+    return res.json(response.data);
+  } catch (err) {
+    console.error('Error fetching Jira projects:', err?.response?.data || err.message);
+    return res.status(500).json({ error: 'Failed to fetch Jira projects' });
+  }
+});
 
-// GET /api/jira/issues – Fetch Jira issues
+// GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
+app.get('/api/jira/issue/:issueId', async (req, res) => {
+  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+    return res.status(401).json({ error: 'User not authenticated with Jira' });
+  }
+  try {
+    const issueUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/issue/${req.params.issueId}`;
+    const response = await axios.get(issueUrl, {
+      headers: {
+        Authorization: `Bearer ${req.session.jiraAccessToken}`,
+        'Accept': 'application/json'
+      }
+    });
+    return res.json(response.data);
+  } catch (err) {
+    console.error('Error fetching Jira issue:', err?.response?.data || err.message);
+    return res.status(500).json({ error: 'Failed to fetch Jira issue details' });
+  }
+});
+
+// GET /api/jira/issues – Fetch Jira issues (using search endpoint)
 app.get('/api/jira/issues', async (req, res) => {
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
@@ -136,7 +174,7 @@ app.post('/api/jira/issues', async (req, res) => {
     return res.json(response.data);
   } catch (err) {
     console.error('Error creating Jira issue:', err?.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to create Jira issue' });
+    return res.status(500).json({ error: 'Failed to create Jira issue', details: err?.response?.data });
   }
 });
 

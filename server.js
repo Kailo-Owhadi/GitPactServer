@@ -75,7 +75,7 @@ app.get('/auth/jira/callback', async (req, res) => {
         req.session.jiraSiteUrl = site.url;
       }
     }
-    res.redirect('/projects.html'); // or wherever your Projects page is served from
+    res.redirect('/projects1.html'); // or wherever your Projects page is served from
   } catch (err) {
     console.error('Error exchanging code for token (Jira):', err?.response?.data || err.message);
     res.status(500).send('Failed to get access token from Atlassian (Jira)');
@@ -129,7 +129,7 @@ app.get('/auth/confluence/callback', async (req, res) => {
         req.session.confluenceSiteUrl = site.url;
       }
     }
-    res.redirect('/projects.html'); // or wherever your Projects page is
+    res.redirect('/projects1.html'); // or wherever your Projects page is
   } catch (err) {
     console.error('Error exchanging code for token (Confluence):', err?.response?.data || err.message);
     res.status(500).send('Failed to get access token from Atlassian (Confluence)');
@@ -378,8 +378,8 @@ app.post('/api/confluence/pages', async (req, res) => {
 });
 
 // -------------------- Serve your main Projects HTML (if needed) --------------------
-app.get('/projects.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'projects.html'));
+app.get('/projects1.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'projects1.html'));
 });
 
 // -------------------- Start Server --------------------

@@ -55,10 +55,10 @@ app.get('/auth/jira/callback', async (req, res) => {
     console.log('missing param');
     return res.status(400).send('Missing code parameter.');
   }
-  if (state !== req.session.oauthState) {
+  /*if (state !== req.session.oauthState) {
     console.log('missing state');
     return res.status(403).send('Invalid state parameter.');
-  }
+  }*/
   try {
     const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
       grant_type: 'authorization_code',

@@ -17,198 +17,227 @@ app.use(session({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// -------------------- Atlassian OAuth Flow --------------------
-/**
- * We'll do a similar flow for Jira and Confluence, but in reality
- * Atlassian uses the same tokens for Jira and Confluence on the same site.
- * We'll keep separate routes for clarity if needed.
- */
-
-// -------------------- Common Helper to Exchange Code for Tokens --------------------
-async function exchangeCodeForTokens(code, redirectUri) {
-  const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
-    grant_type: 'authorization_code',
-    client_id: process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr',
-    client_secret: process.env.ATLASSIAN_CLIENT_SECRET,
-    code,
-    redirect_uri: redirectUri
-  });
-  return tokenResponse.data; // { access_token, refresh_token, etc. }
-}
-
-// -------------------- Jira OAuth --------------------
+// -------------------- Atlassian OAuth (Jira + Confluence) --------------------
+// Shared logic because the tokens are valid across Atlassian products if scopes allow it.
 
 // Step 1: Redirect user to Atlassian login for OAuth consent (Jira)
 app.get('/auth/jira', (req, res) => {
+  // Generate a unique state value and store it in the session
   const state = crypto.randomBytes(16).toString('hex');
-  req.session.oauthStateJira = state;
-  res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr'}&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_REDIRECT_URI || 'http://localhost:3000/auth/jira/callback')}&state=${state}&response_type=code&prompt=consent`);
+  req.session.oauthState = state;
+
+  // Scopes needed for Jira
+  const scopes = encodeURIComponent('read:jira-work manage:jira-project manage:jira-configuration read:jira-user write:jira-work manage:jira-webhook manage:jira-data-provider');
+
+  res.redirect(
+    `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${
+      process.env.ATLASSIAN_CLIENT_ID
+    }&scope=${scopes}&redirect_uri=${encodeURIComponent(
+      process.env.ATLASSIAN_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/jira/callback'
+    )}&state=${state}&response_type=code&prompt=consent`
+  );
 });
 
-// Step 2: Handle Jira callback and exchange code for tokens
+// Step 2: Handle callback for Jira and exchange code for tokens
 app.get('/auth/jira/callback', async (req, res) => {
   const { code, state } = req.query;
   if (!code) {
     return res.status(400).send('Missing code parameter.');
   }
-  if (state !== req.session.oauthStateJira) {
+  if (state !== req.session.oauthState) {
     return res.status(403).send('Invalid state parameter.');
   }
   try {
-    const redirectUri = process.env.ATLASSIAN_REDIRECT_URI || 'http://localhost:3000/auth/jira/callback';
-    const { access_token, refresh_token } = await exchangeCodeForTokens(code, redirectUri);
+    const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
+      grant_type: 'authorization_code',
+      client_id: process.env.ATLASSIAN_CLIENT_ID,
+      client_secret: process.env.ATLASSIAN_CLIENT_SECRET,
+      code,
+      redirect_uri: process.env.ATLASSIAN_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/jira/callback'
+    });
 
-    // Save in session
-    req.session.jiraAccessToken = access_token;
-    req.session.jiraRefreshToken = refresh_token;
+    const { access_token, refresh_token } = tokenResponse.data;
+    req.session.atlassianAccessToken = access_token;
+    req.session.atlassianRefreshToken = refresh_token;
 
-    // Retrieve accessible resources (sites)
+    // Retrieve accessible resources for the user (Jira & Confluence)
     const resourcesResp = await axios.get('https://api.atlassian.com/oauth/token/accessible-resources', {
-      headers: { Authorization: `Bearer ${access_token}` }
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
     });
     const sites = resourcesResp.data;
-    if (sites.length > 0) {
-      // store the first Jira site for simplicity
-      const site = sites.find(s => s.scopes.includes('jira'));
-      if (site) {
-        req.session.jiraSiteId = site.id;
-        req.session.jiraSiteUrl = site.url;
-      }
+    // Typically, "sites" includes both Jira and Confluence if available
+    // For simplicity, store the first Jira site info
+    const jiraSite = sites.find(s => s.scopes.includes('READ:JIRA-WORK'));
+    if (jiraSite) {
+      req.session.jiraSiteId = jiraSite.id;
+      req.session.jiraSiteUrl = jiraSite.url;
     }
-    res.redirect('/projects1.html'); // or wherever your Projects page is served from
+
+    // Also check for a Confluence site
+    const confluenceSite = sites.find(s => s.scopes.includes('READ:CONFLUENCE-SITE'));
+    if (confluenceSite) {
+      req.session.confluenceSiteId = confluenceSite.id;
+      req.session.confluenceSiteUrl = confluenceSite.url;
+    }
+
+    res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
-    console.error('Error exchanging code for token (Jira):', err?.response?.data || err.message);
-    res.status(500).send('Failed to get access token from Atlassian (Jira)');
+    console.error('Error exchanging code for token:', err?.response?.data || err.message);
+    res.status(500).send('Failed to get access token from Atlassian');
   }
 });
 
-// -------------------- Confluence OAuth --------------------
+// Confluence Auth flow can be identical if you want a separate entry point
+// or you can rely on the same tokens if scopes for Confluence are already requested.
+// We'll create a separate route for clarity, though it can be merged in real apps.
 
-// Step 1: Redirect user to Atlassian login for OAuth consent (Confluence)
 app.get('/auth/confluence', (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
-  req.session.oauthStateConfluence = state;
-  // Confluence relevant scopes
-  const confluenceScopes = [
-    'read:confluence-space.summary',
-    'read:confluence-content.summary',
-    'write:confluence-content',
-    'read:confluence-props',
-    'write:confluence-props'
-  ].join('%20');
+  req.session.confluenceOauthState = state;
 
-  res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr'}&scope=${confluenceScopes}&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_CONFLUENCE_REDIRECT_URI || 'http://localhost:3000/auth/confluence/callback')}&state=${state}&response_type=code&prompt=consent`);
+  // Scopes needed for Confluence
+  // You can combine them all in one big scope, but shown separately here
+  const scopes = encodeURIComponent('read:confluence-space read:confluence-props write:confluence-props read:confluence-content write:confluence-content');
+
+  res.redirect(
+    `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${
+      process.env.ATLASSIAN_CLIENT_ID
+    }&scope=${scopes}&redirect_uri=${encodeURIComponent(
+      process.env.ATLASSIAN_CONFLUENCE_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/confluence/callback'
+    )}&state=${state}&response_type=code&prompt=consent`
+  );
 });
 
-// Step 2: Handle Confluence callback
 app.get('/auth/confluence/callback', async (req, res) => {
   const { code, state } = req.query;
   if (!code) {
     return res.status(400).send('Missing code parameter.');
   }
-  if (state !== req.session.oauthStateConfluence) {
+  if (state !== req.session.confluenceOauthState) {
     return res.status(403).send('Invalid state parameter.');
   }
   try {
-    const redirectUri = process.env.ATLASSIAN_CONFLUENCE_REDIRECT_URI || 'http://localhost:3000/auth/confluence/callback';
-    const { access_token, refresh_token } = await exchangeCodeForTokens(code, redirectUri);
+    const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
+      grant_type: 'authorization_code',
+      client_id: process.env.ATLASSIAN_CLIENT_ID,
+      client_secret: process.env.ATLASSIAN_CLIENT_SECRET,
+      code,
+      redirect_uri: process.env.ATLASSIAN_CONFLUENCE_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/confluence/callback'
+    });
 
-    req.session.confluenceAccessToken = access_token;
-    req.session.confluenceRefreshToken = refresh_token;
+    const { access_token, refresh_token } = tokenResponse.data;
 
-    // Retrieve accessible resources to find Confluence site
+    // We can store them in the same session fields or separate
+    req.session.atlassianAccessToken = access_token;
+    req.session.atlassianRefreshToken = refresh_token;
+
+    // Retrieve accessible resources (including Confluence)
     const resourcesResp = await axios.get('https://api.atlassian.com/oauth/token/accessible-resources', {
-      headers: { Authorization: `Bearer ${access_token}` }
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
     });
     const sites = resourcesResp.data;
-    if (sites.length > 0) {
-      // store the first site that includes confluence
-      const site = sites.find(s => s.scopes.includes('confluence'));
-      if (site) {
-        req.session.confluenceSiteId = site.id;
-        req.session.confluenceSiteUrl = site.url;
-      }
+
+    const confluenceSite = sites.find(s => s.scopes.includes('READ:CONFLUENCE-SITE'));
+    if (confluenceSite) {
+      req.session.confluenceSiteId = confluenceSite.id;
+      req.session.confluenceSiteUrl = confluenceSite.url;
     }
-    res.redirect('/projects1.html'); // or wherever your Projects page is
+
+    // Possibly re-check for Jira as well
+    const jiraSite = sites.find(s => s.scopes.includes('READ:JIRA-WORK'));
+    if (jiraSite) {
+      req.session.jiraSiteId = jiraSite.id;
+      req.session.jiraSiteUrl = jiraSite.url;
+    }
+
+    res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
-    console.error('Error exchanging code for token (Confluence):', err?.response?.data || err.message);
+    console.error('Error exchanging code for token:', err?.response?.data || err.message);
     res.status(500).send('Failed to get access token from Atlassian (Confluence)');
   }
 });
 
 // -------------------- Jira Endpoints --------------------
-
-// Check Jira connection status
 app.get('/api/jira/status', (req, res) => {
-  if (req.session.jiraAccessToken && req.session.jiraSiteId) {
+  if (req.session.atlassianAccessToken && req.session.jiraSiteId) {
     return res.json({ connected: true });
   }
   return res.json({ connected: false });
 });
 
-// Get all Jira projects
+// GET /api/jira/projects – Fetch Jira projects
 app.get('/api/jira/projects', async (req, res) => {
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
   }
   try {
     const projectsUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project`;
     const response = await axios.get(projectsUrl, {
       headers: {
-        Authorization: `Bearer ${req.session.jiraAccessToken}`,
+        Authorization: `Bearer ${req.session.atlassianAccessToken}`,
         'Accept': 'application/json'
       }
     });
-    return res.json(response.data); // array of projects
+    return res.json(response.data);
   } catch (err) {
     console.error('Error fetching Jira projects:', err?.response?.data || err.message);
     return res.status(500).json({ error: 'Failed to fetch Jira projects' });
   }
 });
 
-// Get single Jira project details
-app.get('/api/jira/projects/:projectIdOrKey', async (req, res) => {
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
-    return res.status(401).json({ error: 'User not authenticated with Jira' });
+// CREATE /api/jira/projects – Create a new Jira project
+app.post('/api/jira/projects', async (req, res) => {
+  const { name, key, leadAccountId, projectTypeKey } = req.body;
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
+    return res.status(401).json({ error: 'Not authenticated with Jira' });
   }
   try {
-    const { projectIdOrKey } = req.params;
-    const projectUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project/${projectIdOrKey}`;
-    const response = await axios.get(projectUrl, {
-      headers: {
-        Authorization: `Bearer ${req.session.jiraAccessToken}`,
-        'Accept': 'application/json'
+    const url = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project`;
+    const response = await axios.post(
+      url,
+      {
+        key,
+        name,
+        projectTypeKey: projectTypeKey || 'software',
+        leadAccountId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${req.session.atlassianAccessToken}`,
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
     return res.json(response.data);
   } catch (err) {
-    console.error('Error fetching Jira project details:', err?.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to fetch Jira project details' });
+    console.error('Error creating Jira project:', err?.response?.data || err.message);
+    return res.status(500).json({ error: 'Failed to create Jira project', details: err?.response?.data });
   }
 });
 
-// Update Jira project (limited fields can be updated via PUT)
+// UPDATE /api/jira/projects/:projectIdOrKey – Edit a Jira project
 app.put('/api/jira/projects/:projectIdOrKey', async (req, res) => {
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
-    return res.status(401).json({ error: 'User not authenticated with Jira' });
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
+    return res.status(401).json({ error: 'Not authenticated with Jira' });
   }
-  const { projectIdOrKey } = req.params;
-  const { name, leadAccountId, description } = req.body;
+  const { name, key } = req.body;
+  const projectIdOrKey = req.params.projectIdOrKey;
 
-  // Jira's REST API for updating a project is somewhat limited. 
-  // Typically, name, description, url, lead accountId can be updated (where permitted).
   try {
     const url = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project/${projectIdOrKey}`;
     const response = await axios.put(
       url,
       {
-        name,
-        description,
-        leadAccountId
+        key,
+        name
       },
       {
         headers: {
-          Authorization: `Bearer ${req.session.jiraAccessToken}`,
+          Authorization: `Bearer ${req.session.atlassianAccessToken}`,
           'Content-Type': 'application/json'
         }
       }
@@ -220,36 +249,16 @@ app.put('/api/jira/projects/:projectIdOrKey', async (req, res) => {
   }
 });
 
-// Get Jira issues (using search endpoint)
-app.get('/api/jira/issues', async (req, res) => {
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
-    return res.status(401).json({ error: 'User not authenticated with Jira' });
-  }
-  try {
-    const issuesUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/search`;
-    const response = await axios.get(issuesUrl, {
-      headers: {
-        Authorization: `Bearer ${req.session.jiraAccessToken}`,
-        'Accept': 'application/json'
-      }
-    });
-    return res.json(response.data);
-  } catch (err) {
-    console.error('Error fetching Jira issues:', err?.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to fetch Jira issues' });
-  }
-});
-
-// Get single Jira issue
+// GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
 app.get('/api/jira/issue/:issueId', async (req, res) => {
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
   }
   try {
     const issueUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/issue/${req.params.issueId}`;
     const response = await axios.get(issueUrl, {
       headers: {
-        Authorization: `Bearer ${req.session.jiraAccessToken}`,
+        Authorization: `Bearer ${req.session.atlassianAccessToken}`,
         'Accept': 'application/json'
       }
     });
@@ -260,10 +269,30 @@ app.get('/api/jira/issue/:issueId', async (req, res) => {
   }
 });
 
-// Create a new Jira issue
+// GET /api/jira/issues – Fetch Jira issues
+app.get('/api/jira/issues', async (req, res) => {
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
+    return res.status(401).json({ error: 'User not authenticated with Jira' });
+  }
+  try {
+    const issuesUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/search`;
+    const response = await axios.get(issuesUrl, {
+      headers: {
+        Authorization: `Bearer ${req.session.atlassianAccessToken}`,
+        'Accept': 'application/json'
+      }
+    });
+    return res.json(response.data);
+  } catch (err) {
+    console.error('Error fetching Jira issues:', err?.response?.data || err.message);
+    return res.status(500).json({ error: 'Failed to fetch Jira issues' });
+  }
+});
+
+// POST /api/jira/issues – Create a new Jira issue
 app.post('/api/jira/issues', async (req, res) => {
   const { projectKey, summary, description, issueType } = req.body;
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'Not authenticated with Jira' });
   }
   try {
@@ -280,7 +309,7 @@ app.post('/api/jira/issues', async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${req.session.jiraAccessToken}`,
+          Authorization: `Bearer ${req.session.atlassianAccessToken}`,
           'Content-Type': 'application/json'
         }
       }
@@ -292,10 +321,10 @@ app.post('/api/jira/issues', async (req, res) => {
   }
 });
 
-// Transition a Jira issue
+// POST /api/jira/issues/:issueIdOrKey/transition – Transition a Jira issue (optional)
 app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {
   const { transitionId } = req.body;
-  if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+  if (!req.session.atlassianAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'Not authenticated with Jira' });
   }
   try {
@@ -305,7 +334,7 @@ app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {
       { transition: { id: transitionId } },
       {
         headers: {
-          Authorization: `Bearer ${req.session.jiraAccessToken}`,
+          Authorization: `Bearer ${req.session.atlassianAccessToken}`,
           'Content-Type': 'application/json'
         }
       }
@@ -318,18 +347,27 @@ app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {
 });
 
 // -------------------- Confluence Endpoints --------------------
+app.get('/api/confluence/status', (req, res) => {
+  if (req.session.atlassianAccessToken && req.session.confluenceSiteId) {
+    return res.json({ connected: true });
+  }
+  return res.json({ connected: false });
+});
 
-// GET /api/confluence/spaces
+// GET /api/confluence/spaces – fetch Confluence spaces
 app.get('/api/confluence/spaces', async (req, res) => {
-  if (!req.session.confluenceAccessToken || !req.session.confluenceSiteId) {
+  if (!req.session.atlassianAccessToken || !req.session.confluenceSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Confluence' });
   }
   try {
-    const url = `https://api.atlassian.com/ex/confluence/${req.session.confluenceSiteId}/wiki/rest/api/space?limit=50`;
+    const url = `https://api.atlassian.com/ex/confluence/${req.session.confluenceSiteId}/wiki/rest/api/space`;
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${req.session.confluenceAccessToken}`,
+        Authorization: `Bearer ${req.session.atlassianAccessToken}`,
         'Accept': 'application/json'
+      },
+      params: {
+        limit: 50
       }
     });
     return res.json(response.data);
@@ -339,33 +377,56 @@ app.get('/api/confluence/spaces', async (req, res) => {
   }
 });
 
-// POST /api/confluence/pages (create a page)
-app.post('/api/confluence/pages', async (req, res) => {
-  if (!req.session.confluenceAccessToken || !req.session.confluenceSiteId) {
+// GET /api/confluence/pages – fetch Confluence pages (content)
+app.get('/api/confluence/pages', async (req, res) => {
+  if (!req.session.atlassianAccessToken || !req.session.confluenceSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Confluence' });
   }
+  try {
+    // We'll fetch the first 50 pages
+    const url = `https://api.atlassian.com/ex/confluence/${req.session.confluenceSiteId}/wiki/rest/api/content`;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${req.session.atlassianAccessToken}`,
+        'Accept': 'application/json'
+      },
+      params: {
+        limit: 50
+      }
+    });
+    return res.json(response.data);
+  } catch (err) {
+    console.error('Error fetching Confluence pages:', err?.response?.data || err.message);
+    return res.status(500).json({ error: 'Failed to fetch Confluence pages' });
+  }
+});
+
+// POST /api/confluence/pages – create Confluence page
+app.post('/api/confluence/pages', async (req, res) => {
   const { spaceKey, title, content } = req.body;
-  if (!spaceKey || !title) {
-    return res.status(400).json({ error: 'spaceKey and title are required' });
+  if (!req.session.atlassianAccessToken || !req.session.confluenceSiteId) {
+    return res.status(401).json({ error: 'User not authenticated with Confluence' });
+  }
+  if (!spaceKey || !title || !content) {
+    return res.status(400).json({ error: 'spaceKey, title, and content are required.' });
   }
   try {
     const url = `https://api.atlassian.com/ex/confluence/${req.session.confluenceSiteId}/wiki/rest/api/content`;
-    const response = await axios.post(
-      url,
+    const response = await axios.post(url,
       {
         type: 'page',
         title,
         space: { key: spaceKey },
         body: {
           storage: {
-            value: content || ' ',
+            value: content,
             representation: 'storage'
           }
         }
       },
       {
         headers: {
-          Authorization: `Bearer ${req.session.confluenceAccessToken}`,
+          Authorization: `Bearer ${req.session.atlassianAccessToken}`,
           'Content-Type': 'application/json'
         }
       }
@@ -373,13 +434,8 @@ app.post('/api/confluence/pages', async (req, res) => {
     return res.json(response.data);
   } catch (err) {
     console.error('Error creating Confluence page:', err?.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to create Confluence page' });
+    return res.status(500).json({ error: 'Failed to create Confluence page', details: err?.response?.data });
   }
-});
-
-// -------------------- Serve your main Projects HTML (if needed) --------------------
-app.get('/projects1.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'projects1.html'));
 });
 
 // -------------------- Start Server --------------------

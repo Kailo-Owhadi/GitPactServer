@@ -1,14 +1,29 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 
 const app = express();
 
-// -------------------- Middleware --------------------
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gitpact', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+const ProjectSchema = new mongoose.Schema({
+  name: String,
+  owner: String,
+  status: String,
+  deadline: Date,
+  description: String,
+  jiraProjectId: String
+});
+
+const Project = mongoose.model('Project', ProjectSchema);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallbackSecret',
   resave: false,
@@ -18,31 +33,17 @@ app.use(session({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// -------------------- OAuth Flow --------------------
-
-// Step 1: Redirect user to Atlassian login for OAuth consent
 app.get('/auth/jira', (req, res) => {
-  // Generate a unique state value and store it in the session
   const state = crypto.randomBytes(16).toString('hex');
   req.session.oauthState = state;
-  console.log("Generated state:", state);
-
   res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr'}&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/jira/callback')}&state=${state}&response_type=code&prompt=consent`);
 });
 
-// Step 2: Handle callback and exchange code for tokens
 app.get('/auth/jira/callback', async (req, res) => {
   const { code, state } = req.query;
-  if (!code) {
-    console.log('Missing code parameter');
-    return res.status(400).send('Missing code parameter.');
-  }
-  if (state !== req.session.oauthState) {
-    console.log(`Invalid state: received ${state}, expected ${req.session.oauthState}`);
-    return res.status(403).send('Invalid state parameter.');
-  }
+  if (!code) return res.status(400).send('Missing code parameter.');
+  if (state !== req.session.oauthState) return res.status(403).send('Invalid state parameter.');
   try {
-    console.log("Exchanging code for token...");
     const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
       grant_type: 'authorization_code',
       client_id: process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr',
@@ -53,22 +54,14 @@ app.get('/auth/jira/callback', async (req, res) => {
     const { access_token, refresh_token } = tokenResponse.data;
     req.session.jiraAccessToken = access_token;
     req.session.jiraRefreshToken = refresh_token;
-    console.log("Received tokens.");
-
-    // Retrieve accessible Jira Cloud sites for the user
     const resourcesResp = await axios.get('https://api.atlassian.com/oauth/token/accessible-resources', {
-      headers: {
-        Authorization: `Bearer ${access_token}`
-      }
+      headers: { Authorization: `Bearer ${access_token}` }
     });
     const sites = resourcesResp.data;
     if (sites.length > 0) {
-      // For simplicity, store the first site the user can access
       req.session.jiraSiteId = sites[0].id;
       req.session.jiraSiteUrl = sites[0].url;
-      console.log("Stored Jira site info:", sites[0]);
     }
-    console.log("Redirecting to projects1.html");
     res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
     console.error('Error exchanging code for token:', err?.response?.data || err.message);
@@ -76,9 +69,6 @@ app.get('/auth/jira/callback', async (req, res) => {
   }
 });
 
-// -------------------- Additional Endpoints --------------------
-
-// Endpoint to check Jira connection status
 app.get('/api/jira/status', (req, res) => {
   if (req.session.jiraAccessToken && req.session.jiraSiteId) {
     return res.json({ connected: true });
@@ -86,7 +76,6 @@ app.get('/api/jira/status', (req, res) => {
   return res.json({ connected: false });
 });
 
-// GET /api/jira/projects – Fetch Jira projects
 app.get('/api/jira/projects', async (req, res) => {
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
@@ -106,7 +95,6 @@ app.get('/api/jira/projects', async (req, res) => {
   }
 });
 
-// GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
 app.get('/api/jira/issue/:issueId', async (req, res) => {
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
@@ -126,7 +114,6 @@ app.get('/api/jira/issue/:issueId', async (req, res) => {
   }
 });
 
-// GET /api/jira/issues – Fetch Jira issues (using search endpoint)
 app.get('/api/jira/issues', async (req, res) => {
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
@@ -146,7 +133,6 @@ app.get('/api/jira/issues', async (req, res) => {
   }
 });
 
-// POST /api/jira/issues – Create a new Jira issue
 app.post('/api/jira/issues', async (req, res) => {
   const { projectKey, summary, description, issueType } = req.body;
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
@@ -178,7 +164,6 @@ app.post('/api/jira/issues', async (req, res) => {
   }
 });
 
-// POST /api/jira/issues/:issueIdOrKey/transition – Transition a Jira issue
 app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {
   const { transitionId } = req.body;
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
@@ -203,7 +188,61 @@ app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {
   }
 });
 
-// -------------------- Start Server --------------------
+app.get('/api/projects', async (req, res) => {
+  try {
+    const projects = await Project.find();
+    res.json(projects);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+app.post('/api/projects', async (req, res) => {
+  try {
+    const project = new Project(req.body);
+    await project.save();
+    res.status(201).json(project);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create project' });
+  }
+});
+
+app.put('/api/projects/:id', async (req, res) => {
+  try {
+    const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(project);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});
+
+app.delete('/api/projects/:id', async (req, res) => {
+  try {
+    await Project.findByIdAndDelete(req.params.id);
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
+app.post('/api/search', async (req, res) => {
+  const { query } = req.body;
+  try {
+    const [jiraResults, localProjects] = await Promise.all([
+      axios.get(`https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/search?jql=${encodeURIComponent(`text ~ "${query}"`)}`, {
+        headers: { Authorization: `Bearer ${req.session.jiraAccessToken}` }
+      }),
+      Project.find({ $text: { $search: query } })
+    ]);
+    res.json({
+      jira: jiraResults.data.issues,
+      local: localProjects
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Search failed' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

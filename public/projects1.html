@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GitPact - Projects</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <style>
     :root {
       --primary: #3a36e0;
@@ -20,10 +21,8 @@
       --gray-500: #6b7280;
       --gray-700: #374151;
       --white: #ffffff;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     body { background-color: var(--gray-100); color: var(--gray-700); display: flex; min-height: 100vh; overflow-x: hidden; }
@@ -80,63 +79,31 @@
     .jira-issue-key { font-weight: 600; color: var(--primary); }
     .jira-issue-summary { font-size: 0.875rem; margin: 0.25rem 0; }
     .jira-issue-status { font-size: 0.75rem; color: var(--gray-500); }
-    /* Modal styles for New Project and Jira Issue */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 999; }
     .modal-overlay.active { display: flex; }
-    .modal {
-      background: var(--white);
-      border-radius: 0.5rem;
-      width: 400px;
-      max-width: 90%;
-      padding: 1rem;
-      box-shadow: var(--shadow-lg);
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      align-items: center;
-    }
+    .modal { background: var(--white); border-radius: 0.5rem; width: 400px; max-width: 90%; padding: 1rem; box-shadow: var(--shadow-lg); }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center; }
     .modal-title { font-size: 1.125rem; font-weight: 600; }
     .modal-close { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--gray-500); }
     .modal-body { margin-bottom: 1rem; }
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; margin-bottom: 0.25rem; font-weight: 500; font-size: 0.875rem; }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid var(--gray-300);
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      border-color: var(--primary);
-    }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem; border: 1px solid var(--gray-300); border-radius: 0.375rem; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--primary); }
     .modal-footer { text-align: right; }
     .modal-footer button { margin-left: 0.5rem; }
-    @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); position: fixed; }
-      .sidebar.active { transform: translateX(0); }
-      .main-content { margin-left: 0; width: 100%; }
-      .toggle-sidebar { display: block; }
-    }
+    .jira-projects-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .jira-project-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 0.375rem; padding: 1rem; cursor: pointer; transition: transform 0.2s; }
+    .jira-project-card:hover { transform: translateY(-2px); }
+    .jira-project-name { font-weight: 600; color: var(--primary); margin-bottom: 0.5rem; }
+    .jira-project-details { font-size: 0.875rem; color: var(--gray-500); }
+    .type-selector, .priority-selector { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .type-option, .priority-option { padding: 0.5rem 1rem; border: 1px solid var(--gray-200); border-radius: 0.375rem; cursor: pointer; transition: all 0.2s; }
+    .type-option.selected, .priority-option.selected { border-color: var(--primary); background-color: rgba(58, 54, 224, 0.1); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); position: fixed; } .sidebar.active { transform: translateX(0); } .main-content { margin-left: 0; width: 100%; } .toggle-sidebar { display: block; } }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <img src="/api/placeholder/32/32" alt="GitPact Logo" />
@@ -167,8 +134,6 @@
       </div>
     </div>
   </aside>
-
-  <!-- Main Content -->
   <div class="main-content">
     <div class="topbar">
       <button class="toggle-sidebar"><i class="fas fa-bars"></i></button>
@@ -182,9 +147,7 @@
         <button class="topbar-btn"><i class="fas fa-th-large"></i></button>
       </div>
     </div>
-
     <div class="page-content">
-      <!-- Heading & Actions -->
       <div class="page-heading">
         <h1 class="page-title">Projects</h1>
         <div class="page-actions">
@@ -192,62 +155,27 @@
           <button class="btn btn-primary" id="newProjectBtn"><i class="fas fa-plus"></i> New Project</button>
         </div>
       </div>
-
-      <!-- Table of Existing Projects -->
-      <table class="projects-table">
-        <thead>
-          <tr>
-            <th>Project Name</th>
-            <th>Owner</th>
-            <th>Status</th>
-            <th>Deadline</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="projectsTableBody">
-          <tr>
-            <td>Mobile App Redesign</td>
-            <td>Maria Chen</td>
-            <td>In Progress</td>
-            <td>2025-03-15</td>
-            <td>
-              <button class="table-action-btn view" data-project="mobile-app">View</button>
-              <button class="table-action-btn edit">Edit</button>
-              <button class="table-action-btn delete">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Customer Portal</td>
-            <td>Alex Johnson</td>
-            <td>Planning</td>
-            <td>2025-04-01</td>
-            <td>
-              <button class="table-action-btn view" data-project="customer-portal">View</button>
-              <button class="table-action-btn edit">Edit</button>
-              <button class="table-action-btn delete">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Jira Integration Section -->
+      <div class="timeline-container">
+        <h2>Project Timeline</h2>
+        <div id="timelineChart" style="height: 300px;"></div>
+      </div>
       <div class="jira-section">
-        <h2>Jira Integration</h2>
-        <p style="margin-bottom: 1rem;">
-          Connect your Jira projects, load issues, and create or transition them directly from GitPact.
-        </p>
+        <h2>Jira Projects</h2>
         <div class="jira-buttons">
-          <button class="btn btn-outline" id="connectJiraBtn"><i class="fab fa-jira"></i> Connect Jira</button>
+          <button class="btn btn-primary" id="refreshJiraProjectsBtn"><i class="fas fa-sync-alt"></i> Refresh Projects</button>
+        </div>
+        <div class="jira-projects-list" id="jiraProjectsContainer"></div>
+      </div>
+      <div class="jira-section">
+        <h2>Jira Issues</h2>
+        <div class="jira-buttons">
           <button class="btn btn-primary" id="loadJiraIssuesBtn"><i class="fas fa-sync-alt"></i> Load Issues</button>
           <button class="btn btn-outline" id="createJiraIssueBtn"><i class="fas fa-plus"></i> Create Issue</button>
         </div>
-        <!-- Container to display loaded Jira issues -->
         <div class="jira-issues-list" id="jiraIssuesContainer"></div>
       </div>
     </div>
   </div>
-
-  <!-- Modal for New Project -->
   <div class="modal-overlay" id="projectModalOverlay">
     <div class="modal">
       <div class="modal-header">
@@ -282,8 +210,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal for Creating Jira Issue -->
   <div class="modal-overlay" id="jiraIssueModalOverlay">
     <div class="modal">
       <div class="modal-header">
@@ -318,154 +244,158 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal for Viewing Jira Issue Details -->
   <div class="modal-overlay" id="jiraIssueViewModalOverlay">
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title">Issue Details</div>
         <button class="modal-close" id="closeJiraIssueViewModalBtn">&times;</button>
       </div>
-      <div class="modal-body" id="jiraIssueViewContent">
-        <!-- Issue details will be injected here -->
-      </div>
+      <div class="modal-body" id="jiraIssueViewContent"></div>
       <div class="modal-footer">
         <button class="btn btn-primary" id="closeJiraIssueViewBtn">Close</button>
       </div>
     </div>
   </div>
-
-  <!-- JavaScript -->
   <script>
-    // Toggle Sidebar for smaller screens
-    const toggleSidebarBtn = document.querySelector('.toggle-sidebar');
-    const sidebar = document.querySelector('.sidebar');
-    toggleSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
+    let timelineChart;
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkJiraStatus();
+      initEventListeners();
+      loadLocalProjects();
     });
-
-    // ---------------- Modal Logic for New Project ----------------
-    const newProjectBtn = document.getElementById('newProjectBtn');
-    const projectModalOverlay = document.getElementById('projectModalOverlay');
-    const closeProjectModalBtn = document.getElementById('closeProjectModalBtn');
-    const cancelProjectBtn = document.getElementById('cancelProjectBtn');
-    const saveProjectBtn = document.getElementById('saveProjectBtn');
-
-    newProjectBtn.addEventListener('click', () => {
-      projectModalOverlay.classList.add('active');
-    });
-    const closeProjectModal = () => projectModalOverlay.classList.remove('active');
-    if (closeProjectModalBtn) closeProjectModalBtn.addEventListener('click', closeProjectModal);
-    cancelProjectBtn.addEventListener('click', closeProjectModal);
-    saveProjectBtn.addEventListener('click', () => {
-      const name = document.getElementById('projectName').value;
-      const owner = document.getElementById('projectOwner').value;
-      const deadline = document.getElementById('projectDeadline').value;
-      const status = document.getElementById('projectStatus').value || 'Planning';
-      const desc = document.getElementById('projectDesc').value;
-      const tbody = document.getElementById('projectsTableBody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${name}</td>
-        <td>${owner}</td>
-        <td>${status}</td>
-        <td>${deadline}</td>
-        <td>
-          <button class="table-action-btn view" data-project="${name}">View</button>
-          <button class="table-action-btn edit">Edit</button>
-          <button class="table-action-btn delete">Delete</button>
-        </td>
-      `;
-      tbody.appendChild(row);
-      closeProjectModal();
-    });
-
-    // ---------------- Modal Logic for Creating Jira Issue ----------------
-    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
-    const jiraIssueModalOverlay = document.getElementById('jiraIssueModalOverlay');
-    const closeJiraIssueModalBtn = document.getElementById('closeJiraIssueModalBtn');
-    const cancelJiraIssueBtn = document.getElementById('cancelJiraIssueBtn');
-    const createJiraIssueModalBtn = document.getElementById('createJiraIssueModalBtn');
-
-    createJiraIssueBtn.addEventListener('click', () => {
-      jiraIssueModalOverlay.classList.add('active');
-    });
-    const closeJiraIssueModal = () => jiraIssueModalOverlay.classList.remove('active');
-    closeJiraIssueModalBtn.addEventListener('click', closeJiraIssueModal);
-    cancelJiraIssueBtn.addEventListener('click', closeJiraIssueModal);
-    createJiraIssueModalBtn.addEventListener('click', async () => {
-      const projectKey = document.getElementById('jiraProjectKey').value;
-      const summary = document.getElementById('jiraSummary').value;
-      const description = document.getElementById('jiraDescription').value;
-      const issueType = document.getElementById('jiraIssueType').value;
-      if (!projectKey || !summary) {
-        alert('Project Key and Issue Summary are required.');
-        return;
-      }
+    async function checkJiraStatus() {
       try {
-        const res = await fetch('/api/jira/issues', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectKey,
-            summary,
-            description,
-            issueType
-          })
-        });
-        if (!res.ok) throw new Error('Issue creation failed');
-        const data = await res.json();
-        alert(`Created issue ${data.key}!`);
-        closeJiraIssueModal();
-        loadJiraIssues();
+        const res = await fetch('/api/jira/status');
+        const status = await res.json();
+        const connectBtn = document.getElementById('connectJiraBtn');
+        if (status.connected) {
+          connectBtn.textContent = 'Connected to Jira';
+          await Promise.all([loadJiraProjects(), loadJiraIssues()]);
+        } else {
+          connectBtn.textContent = 'Connect Jira';
+        }
       } catch (err) {
-        console.error(err);
-        alert('Failed to create issue');
-      }
-    });
-
-    // ---------------- Modal Logic for Viewing Jira Issue Details ----------------
-    const jiraIssueViewModalOverlay = document.getElementById('jiraIssueViewModalOverlay');
-    const closeJiraIssueViewModalBtn = document.getElementById('closeJiraIssueViewModalBtn');
-    const closeJiraIssueViewBtn = document.getElementById('closeJiraIssueViewBtn');
-    const jiraIssueViewContent = document.getElementById('jiraIssueViewContent');
-    const closeJiraIssueViewModal = () => jiraIssueViewModalOverlay.classList.remove('active');
-    closeJiraIssueViewModalBtn.addEventListener('click', closeJiraIssueViewModal);
-    closeJiraIssueViewBtn.addEventListener('click', closeJiraIssueViewModal);
-
-    async function viewJiraIssue(issueId) {
-      try {
-        const res = await fetch(`/api/jira/issue/${issueId}`);
-        if (!res.ok) throw new Error('Failed to fetch issue details');
-        const issue = await res.json();
-        jiraIssueViewContent.innerHTML = `
-          <h3>${issue.key}: ${issue.fields.summary}</h3>
-          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
-          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
-          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
-        `;
-        jiraIssueViewModalOverlay.classList.add('active');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to load issue details');
+        console.error('Status check failed:', err);
       }
     }
-
-    // ---------------- Jira Integration: Connect, Load Issues, and Check Status ----------------
-    const connectJiraBtn = document.getElementById('connectJiraBtn');
-    const loadJiraIssuesBtn = document.getElementById('loadJiraIssuesBtn');
-    const jiraIssuesContainer = document.getElementById('jiraIssuesContainer');
-
-    connectJiraBtn.addEventListener('click', () => {
-      window.location.href = 'https://gitpactserver.onrender.com/auth/jira';
-    });
-
+    async function loadJiraProjects() {
+      try {
+        const res = await fetch('/api/jira/projects');
+        const projects = await res.json();
+        renderJiraProjects(projects);
+        initTimelineChart(projects);
+      } catch (err) {
+        showError('Failed to load Jira projects');
+      }
+    }
+    function renderJiraProjects(projects) {
+      const container = document.getElementById('jiraProjectsContainer');
+      container.innerHTML = projects.map(project => `
+        <div class="jira-project-card">
+          <div class="jira-project-name">${project.name}</div>
+          <div class="jira-project-details">
+            <p>Key: ${project.key}</p>
+            <p>Type: ${project.projectTypeKey}</p>
+            <p>Lead: ${project.lead?.displayName || 'N/A'}</p>
+          </div>
+          <div class="project-actions" style="margin-top: 0.5rem;">
+            <button class="table-action-btn edit" data-project-id="${project.id}">Edit</button>
+            <button class="table-action-btn view" data-project-key="${project.key}">View Issues</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    function initTimelineChart(projects) {
+      const options = {
+        series: [{
+          data: projects.map(project => ({
+            x: project.name,
+            y: [
+              new Date(project.startDate).getTime(),
+              new Date(project.deadline).getTime()
+            ]
+          }))
+        }],
+        chart: {
+          height: 300,
+          type: 'rangeBar',
+          toolbar: { show: true }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true
+          }
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        tooltip: {
+          custom: function({ seriesIndex, dataPointIndex, w }) {
+            const project = projects[dataPointIndex];
+            return `
+              <div class="chart-tooltip">
+                <strong>${project.name}</strong>
+                <div>Start: ${project.startDate}</div>
+                <div>Deadline: ${project.deadline}</div>
+                <div>Status: ${project.status}</div>
+              </div>
+            `;
+          }
+        }
+      };
+      timelineChart = new ApexCharts(document.querySelector("#timelineChart"), options);
+      timelineChart.render();
+    }
+    function initEventListeners() {
+      document.getElementById('refreshJiraProjectsBtn').addEventListener('click', loadJiraProjects);
+      document.getElementById('loadJiraIssuesBtn').addEventListener('click', loadJiraIssues);
+      document.getElementById('createJiraIssueBtn').addEventListener('click', () => {
+        document.getElementById('jiraIssueModalOverlay').classList.add('active');
+      });
+      document.getElementById('closeJiraIssueModalBtn').addEventListener('click', () => {
+        document.getElementById('jiraIssueModalOverlay').classList.remove('active');
+      });
+      document.getElementById('cancelJiraIssueBtn').addEventListener('click', () => {
+        document.getElementById('jiraIssueModalOverlay').classList.remove('active');
+      });
+      document.getElementById('createJiraIssueModalBtn').addEventListener('click', async () => {
+        const projectKey = document.getElementById('jiraProjectKey').value;
+        const summary = document.getElementById('jiraSummary').value;
+        const description = document.getElementById('jiraDescription').value;
+        const issueType = document.getElementById('jiraIssueType').value;
+        if (!projectKey || !summary) {
+          alert('Project Key and Issue Summary are required.');
+          return;
+        }
+        try {
+          const res = await fetch('/api/jira/issues', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              projectKey,
+              summary,
+              description,
+              issueType
+            })
+          });
+          if (!res.ok) throw new Error('Issue creation failed');
+          const data = await res.json();
+          alert(`Created issue ${data.key}!`);
+          document.getElementById('jiraIssueModalOverlay').classList.remove('active');
+          loadJiraIssues();
+        } catch (err) {
+          console.error(err);
+          alert('Failed to create issue');
+        }
+      });
+    }
     async function loadJiraIssues() {
       try {
         const res = await fetch('/api/jira/issues');
         if (!res.ok) throw new Error('Failed to fetch issues');
         const data = await res.json();
-        jiraIssuesContainer.innerHTML = '';
+        const container = document.getElementById('jiraIssuesContainer');
+        container.innerHTML = '';
         if (data.issues && Array.isArray(data.issues) && data.issues.length > 0) {
           data.issues.forEach(issue => {
             const item = document.createElement('div');
@@ -475,45 +405,64 @@
               <div class="jira-issue-summary">${issue.fields.summary}</div>
               <div class="jira-issue-status">Status: ${issue.fields.status.name}</div>
             `;
-            // When an issue item is clicked, view its details
             item.addEventListener('click', () => viewJiraIssue(issue.key));
-            jiraIssuesContainer.appendChild(item);
+            container.appendChild(item);
           });
         } else {
-          jiraIssuesContainer.innerHTML = '<p>No issues found.</p>';
+          container.innerHTML = '<p>No issues found.</p>';
         }
       } catch (error) {
         alert('Error loading Jira issues');
         console.error(error);
       }
     }
-
-    async function checkJiraStatus() {
+    async function viewJiraIssue(issueId) {
       try {
-        const res = await fetch('/api/jira/status');
-        const status = await res.json();
-        if (status.connected) {
-          connectJiraBtn.textContent = 'Connected to Jira';
-          loadJiraIssues();
-        } else {
-          connectJiraBtn.textContent = 'Connect Jira';
-        }
+        const res = await fetch(`/api/jira/issue/${issueId}`);
+        if (!res.ok) throw new Error('Failed to fetch issue details');
+        const issue = await res.json();
+        document.getElementById('jiraIssueViewContent').innerHTML = `
+          <h3>${issue.key}: ${issue.fields.summary}</h3>
+          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
+          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
+          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
+        `;
+        document.getElementById('jiraIssueViewModalOverlay').classList.add('active');
       } catch (err) {
-        console.error("Error checking Jira status:", err);
+        console.error(err);
+        alert('Failed to load issue details');
       }
     }
-
-    window.addEventListener('load', checkJiraStatus);
-
-    // Optional: Add event listeners for project view buttons (for your platform's projects)
-    document.getElementById('projectsTableBody').addEventListener('click', (e) => {
-      if (e.target.classList.contains('view')) {
-        const projectName = e.target.getAttribute('data-project');
-        // Here you would navigate to a detailed view of the project.
-        // For demonstration, we'll simply alert the project name.
-        alert(`Viewing details for project: ${projectName}`);
-      }
-    });
+    function showError(message) {
+      alert(message);
+    }
+    function loadLocalProjects() {
+      const tbody = document.getElementById('projectsTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td>Mobile App Redesign</td>
+          <td>Maria Chen</td>
+          <td>In Progress</td>
+          <td>2025-03-15</td>
+          <td>
+            <button class="table-action-btn view" data-project="mobile-app">View</button>
+            <button class="table-action-btn edit">Edit</button>
+            <button class="table-action-btn delete">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Customer Portal</td>
+          <td>Alex Johnson</td>
+          <td>Planning</td>
+          <td>2025-04-01</td>
+          <td>
+            <button class="table-action-btn view" data-project="customer-portal">View</button>
+            <button class="table-action-btn edit">Edit</button>
+            <button class="table-action-btn delete">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
   </script>
 </body>
 </html>

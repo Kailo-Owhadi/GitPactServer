@@ -328,6 +328,7 @@
       font-size: 0.75rem;
       color: var(--gray-500);
     }
+    /* Modal styles for New Project */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -381,7 +382,8 @@
       font-size: 0.875rem;
     }
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 0.5rem;
       border: 1px solid var(--gray-300);
@@ -391,7 +393,8 @@
       transition: border-color 0.2s;
     }
     .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       border-color: var(--primary);
     }
     .modal-footer {
@@ -454,25 +457,15 @@
   <!-- Main Content -->
   <div class="main-content">
     <div class="topbar">
-      <button class="toggle-sidebar">
-        <i class="fas fa-bars"></i>
-      </button>
+      <button class="toggle-sidebar"><i class="fas fa-bars"></i></button>
       <div class="search-bar">
         <i class="fas fa-search"></i>
         <input type="text" placeholder="Search projects, contracts, freelancers..." />
       </div>
       <div class="topbar-tools">
-        <button class="topbar-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <button class="topbar-btn">
-          <i class="fas fa-envelope"></i>
-          <span class="notification-badge">5</span>
-        </button>
-        <button class="topbar-btn">
-          <i class="fas fa-th-large"></i>
-        </button>
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notification-badge">3</span></button>
+        <button class="topbar-btn"><i class="fas fa-envelope"></i><span class="notification-badge">5</span></button>
+        <button class="topbar-btn"><i class="fas fa-th-large"></i></button>
       </div>
     </div>
 
@@ -481,12 +474,8 @@
       <div class="page-heading">
         <h1 class="page-title">Projects</h1>
         <div class="page-actions">
-          <button class="btn btn-outline" id="filterBtn">
-            <i class="fas fa-filter"></i> Filter
-          </button>
-          <button class="btn btn-primary" id="newProjectBtn">
-            <i class="fas fa-plus"></i> New Project
-          </button>
+          <button class="btn btn-outline" id="filterBtn"><i class="fas fa-filter"></i> Filter</button>
+          <button class="btn btn-primary" id="newProjectBtn"><i class="fas fa-plus"></i> New Project</button>
         </div>
       </div>
 
@@ -534,15 +523,9 @@
           Connect your Jira projects, load issues, and create or transition them directly from GitPact.
         </p>
         <div class="jira-buttons">
-          <button class="btn btn-outline" id="connectJiraBtn">
-            <i class="fab fa-jira"></i> Connect Jira
-          </button>
-          <button class="btn btn-primary" id="loadJiraIssuesBtn">
-            <i class="fas fa-sync-alt"></i> Load Issues
-          </button>
-          <button class="btn btn-outline" id="createJiraIssueBtn">
-            <i class="fas fa-plus"></i> Create Issue
-          </button>
+          <button class="btn btn-outline" id="connectJiraBtn"><i class="fab fa-jira"></i> Connect Jira</button>
+          <button class="btn btn-primary" id="loadJiraIssuesBtn"><i class="fas fa-sync-alt"></i> Load Issues</button>
+          <button class="btn btn-outline" id="createJiraIssueBtn"><i class="fas fa-plus"></i> Create Issue</button>
         </div>
         <!-- Container to display loaded Jira issues -->
         <div class="jira-issues-list" id="jiraIssuesContainer"></div>
@@ -550,12 +533,12 @@
     </div>
   </div>
 
-  <!-- New Project Modal (Hidden by default) -->
+  <!-- Modal for New Project -->
   <div class="modal-overlay" id="projectModalOverlay">
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title">Create New Project</div>
-        <button class="modal-close" id="closeModalBtn">&times;</button>
+        <button class="modal-close" id="closeProjectModalBtn">&times;</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -586,6 +569,42 @@
     </div>
   </div>
 
+  <!-- Modal for Creating Jira Issue -->
+  <div class="modal-overlay" id="jiraIssueModalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Create Jira Issue</div>
+        <button class="modal-close" id="closeJiraIssueModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="jiraProjectKey">Project Key</label>
+          <input type="text" id="jiraProjectKey" placeholder="e.g. TEST" />
+        </div>
+        <div class="form-group">
+          <label for="jiraSummary">Issue Summary</label>
+          <input type="text" id="jiraSummary" placeholder="Summary of the issue" />
+        </div>
+        <div class="form-group">
+          <label for="jiraDescription">Issue Description</label>
+          <textarea id="jiraDescription" rows="4" placeholder="Describe the issue in detail"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="jiraIssueType">Issue Type</label>
+          <select id="jiraIssueType">
+            <option value="Task" selected>Task</option>
+            <option value="Bug">Bug</option>
+            <option value="Story">Story</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelJiraIssueBtn">Cancel</button>
+        <button class="btn btn-primary" id="createJiraIssueModalBtn">Create Issue</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
     // Toggle Sidebar for smaller screens
@@ -597,17 +616,17 @@
 
     // Modal logic for New Project
     const newProjectBtn = document.getElementById('newProjectBtn');
-    const modalOverlay = document.getElementById('projectModalOverlay');
-    const closeModalBtn = document.getElementById('closeModalBtn');
+    const projectModalOverlay = document.getElementById('projectModalOverlay');
+    const closeProjectModalBtn = document.getElementById('closeProjectModalBtn') || document.getElementById('closeProjectModalBtn');
     const cancelProjectBtn = document.getElementById('cancelProjectBtn');
     const saveProjectBtn = document.getElementById('saveProjectBtn');
 
     newProjectBtn.addEventListener('click', () => {
-      modalOverlay.classList.add('active');
+      projectModalOverlay.classList.add('active');
     });
-    const closeModal = () => modalOverlay.classList.remove('active');
-    closeModalBtn.addEventListener('click', closeModal);
-    cancelProjectBtn.addEventListener('click', closeModal);
+    const closeProjectModal = () => projectModalOverlay.classList.remove('active');
+    if (closeProjectModalBtn) closeProjectModalBtn.addEventListener('click', closeProjectModal);
+    cancelProjectBtn.addEventListener('click', closeProjectModal);
     saveProjectBtn.addEventListener('click', () => {
       const name = document.getElementById('projectName').value;
       const owner = document.getElementById('projectOwner').value;
@@ -628,21 +647,63 @@
         </td>
       `;
       tbody.appendChild(row);
-      closeModal();
+      closeProjectModal();
     });
 
-    // Jira Integration
+    // Modal logic for Creating Jira Issue
+    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
+    const jiraIssueModalOverlay = document.getElementById('jiraIssueModalOverlay');
+    const closeJiraIssueModalBtn = document.getElementById('closeJiraIssueModalBtn');
+    const cancelJiraIssueBtn = document.getElementById('cancelJiraIssueBtn');
+    const createJiraIssueModalBtn = document.getElementById('createJiraIssueModalBtn');
+
+    createJiraIssueBtn.addEventListener('click', () => {
+      jiraIssueModalOverlay.classList.add('active');
+    });
+    const closeJiraIssueModal = () => jiraIssueModalOverlay.classList.remove('active');
+    closeJiraIssueModalBtn.addEventListener('click', closeJiraIssueModal);
+    cancelJiraIssueBtn.addEventListener('click', closeJiraIssueModal);
+    createJiraIssueModalBtn.addEventListener('click', async () => {
+      const projectKey = document.getElementById('jiraProjectKey').value;
+      const summary = document.getElementById('jiraSummary').value;
+      const description = document.getElementById('jiraDescription').value;
+      const issueType = document.getElementById('jiraIssueType').value;
+      if (!projectKey || !summary) {
+        alert('Project Key and Issue Summary are required.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/jira/issues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectKey,
+            summary,
+            description,
+            issueType
+          })
+        });
+        if (!res.ok) throw new Error('Issue creation failed');
+        const data = await res.json();
+        alert(`Created issue ${data.key}!`);
+        closeJiraIssueModal();
+        // Optionally refresh the list of issues
+        loadJiraIssues();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to create issue');
+      }
+    });
+
+    // Jira Integration: Connect, Load Issues, and Check Status
     const connectJiraBtn = document.getElementById('connectJiraBtn');
     const loadJiraIssuesBtn = document.getElementById('loadJiraIssuesBtn');
-    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
     const jiraIssuesContainer = document.getElementById('jiraIssuesContainer');
 
-    // When Connect Jira is clicked, start the OAuth flow
     connectJiraBtn.addEventListener('click', () => {
       window.location.href = 'https://gitpactserver.onrender.com/auth/jira';
     });
 
-    // Function to load Jira issues
     async function loadJiraIssues() {
       try {
         const res = await fetch('/api/jira/issues');
@@ -669,14 +730,12 @@
       }
     }
 
-    // Function to check connection status
     async function checkJiraStatus() {
       try {
         const res = await fetch('/api/jira/status');
         const status = await res.json();
         if (status.connected) {
           connectJiraBtn.textContent = 'Connected to Jira';
-          // Optionally, automatically load issues if connected:
           loadJiraIssues();
         } else {
           connectJiraBtn.textContent = 'Connect Jira';
@@ -686,36 +745,8 @@
       }
     }
 
-    // Check connection status on page load
     window.addEventListener('load', checkJiraStatus);
 
-    // Create a new Jira Issue via POST to the server
-    createJiraIssueBtn.addEventListener('click', async () => {
-      const projectKey = prompt('Enter Jira Project Key (e.g. TEST):');
-      const summary = prompt('Issue summary:');
-      const description = prompt('Issue description:');
-      if (!projectKey || !summary) return;
-      try {
-        const res = await fetch('/api/jira/issues', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectKey,
-            summary,
-            description,
-            issueType: 'Task'
-          })
-        });
-        if (!res.ok) throw new Error('Issue creation failed');
-        const data = await res.json();
-        alert(`Created issue ${data.key}!`);
-        // Optionally refresh the list of issues
-        loadJiraIssues();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to create issue');
-      }
-    });
   </script>
 </body>
 </html>

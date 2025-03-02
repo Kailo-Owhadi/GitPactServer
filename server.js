@@ -86,7 +86,7 @@ app.get('/auth/jira/callback', async (req, res) => {
     }
     // After connection, redirect back to your projects page.
     console.log('now redirecting');
-    res.redirect('https://gitpactserver.onrender.com/public/projects1.html');
+    res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
     console.error('Error exchanging code for token:', err?.response?.data || err.message);
     res.status(500).send('Failed to get access token from Atlassian');

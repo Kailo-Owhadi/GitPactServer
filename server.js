@@ -44,7 +44,7 @@ app.get('/auth/jira', (req, res) => {
     const oauthUrl = `${authorizationUrl}?${queryParams.toString()}`;
     console.log("Redirecting to OAuth URL:", oauthUrl);*/
     console.log('redirecting');
-    res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fjira%2Fcallback&state=${state}&response_type=code&prompt=consent`);
+    res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent('https://gitpactserver.onrender.com/auth/jira/callback')}&state=${state}&response_type=code&prompt=consent`);
     //res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID}&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_REDIRECT_URI)}&state=${state}&response_type=code&prompt=consent`);
 });
 
@@ -86,7 +86,7 @@ app.get('/auth/jira/callback', async (req, res) => {
     }
     // After connection, redirect back to your projects page.
     console.log('now redirecting');
-    res.redirect('http://localhost:5500/public/projects1.html');
+    res.redirect('https://gitpactserver.onrender.com/public/projects1.html');
   } catch (err) {
     console.error('Error exchanging code for token:', err?.response?.data || err.message);
     res.status(500).send('Failed to get access token from Atlassian');

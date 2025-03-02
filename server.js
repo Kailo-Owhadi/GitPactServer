@@ -22,55 +22,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Step 1: Redirect user to Atlassian login for OAuth consent
 app.get('/auth/jira', (req, res) => {
-    // Generate a unique state value and store it in the session
-    const state = crypto.randomBytes(16).toString('hex');
-    req.session.oauthState = state;
-  
-   /* const authorizationUrl = 'https://auth.atlassian.com/authorize';
-    const scopes = [
-      'read:jira-work',
-      'write:jira-work',
-      'read:jira-user'
-    ].join(' ');
-    const queryParams = new URLSearchParams({
-      audience: 'api.atlassian.com',
-      client_id: process.env.ATLASSIAN_CLIENT_ID,
-      scope: scopes,
-      redirect_uri: process.env.ATLASSIAN_REDIRECT_URI,
-      response_type: 'code',
-      prompt: 'consent',
-      state: state
-    });
-    const oauthUrl = `${authorizationUrl}?${queryParams.toString()}`;
-    console.log("Redirecting to OAuth URL:", oauthUrl);*/
-    console.log('redirecting');
-    res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent('https://gitpactserver.onrender.com/auth/jira/callback')}&state=${state}&response_type=code&prompt=consent`);
-    //res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID}&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_REDIRECT_URI)}&state=${state}&response_type=code&prompt=consent`);
+  // Generate a unique state value and store it in the session
+  const state = crypto.randomBytes(16).toString('hex');
+  req.session.oauthState = state;
+  console.log("Generated state:", state);
+
+  res.redirect(`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr'}&scope=read%3Ajira-work%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider&redirect_uri=${encodeURIComponent(process.env.ATLASSIAN_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/jira/callback')}&state=${state}&response_type=code&prompt=consent`);
 });
 
 // Step 2: Handle callback and exchange code for tokens
 app.get('/auth/jira/callback', async (req, res) => {
-  const { code } = req.query;
+  const { code, state } = req.query;
   if (!code) {
-    console.log('missing param');
+    console.log('Missing code parameter');
     return res.status(400).send('Missing code parameter.');
   }
-  /*if (state !== req.session.oauthState) {
-    console.log('missing state');
+  if (state !== req.session.oauthState) {
+    console.log(`Invalid state: received ${state}, expected ${req.session.oauthState}`);
     return res.status(403).send('Invalid state parameter.');
-  }*/
+  }
   try {
+    console.log("Exchanging code for token...");
     const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
       grant_type: 'authorization_code',
-      client_id: process.env.ATLASSIAN_CLIENT_ID,
+      client_id: process.env.ATLASSIAN_CLIENT_ID || 'omRjVfp6XFBBj7RcKYQNiaUYjLj1Q1Lr',
       client_secret: process.env.ATLASSIAN_CLIENT_SECRET,
       code,
-      redirect_uri: process.env.ATLASSIAN_REDIRECT_URI
+      redirect_uri: process.env.ATLASSIAN_REDIRECT_URI || 'https://gitpactserver.onrender.com/auth/jira/callback'
     });
-    console.log('got token?');
     const { access_token, refresh_token } = tokenResponse.data;
     req.session.jiraAccessToken = access_token;
     req.session.jiraRefreshToken = refresh_token;
+    console.log("Received tokens.");
 
     // Retrieve accessible Jira Cloud sites for the user
     const resourcesResp = await axios.get('https://api.atlassian.com/oauth/token/accessible-resources', {
@@ -83,9 +66,10 @@ app.get('/auth/jira/callback', async (req, res) => {
       // For simplicity, store the first site the user can access
       req.session.jiraSiteId = sites[0].id;
       req.session.jiraSiteUrl = sites[0].url;
+      console.log("Stored Jira site info:", sites[0]);
     }
     // After connection, redirect back to your projects page.
-    console.log('now redirecting');
+    console.log("Redirecting to projects1.html");
     res.redirect('https://gitpactserver.onrender.com/projects1.html');
   } catch (err) {
     console.error('Error exchanging code for token:', err?.response?.data || err.message);

@@ -235,10 +235,11 @@ app.post('/api/jira/issues', async (req, res) => {
             project: { key: projectKey },
             summary: summary,
             description: adfDescription,
-            issuetype: {id: "1"},
+            issuetype: "1",
             type: "standard",
             issueTypeId: "1",
-            name: "task" // Use ID instead of name
+            id: "1",
+            name: "Task" // Use ID instead of name
           }
         },
         {

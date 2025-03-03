@@ -140,9 +140,13 @@ app.post('/api/jira/projects', async (req, res) => {
 
 // GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
 app.get('/api/jira/issue/:issueId', async (req, res) => {
+    console.log(!req.session.jiraAccessTokn);
+    console.log(req.session.jiraSiteId);
+    console.log(req.params.issueId);
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
   }
+  console.log('gets here');
   try {
     const issueUrl = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/issue/${req.params.issueId}`;
     const response = await axios.get(issueUrl, {

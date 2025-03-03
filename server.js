@@ -236,6 +236,7 @@ app.post('/api/jira/issues', async (req, res) => {
             summary: summary,
             description: adfDescription,
             issuetype: { id: 1 },
+            type: "standard",
             name: "task" // Use ID instead of name
           }
         },

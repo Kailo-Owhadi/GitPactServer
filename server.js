@@ -87,7 +87,7 @@ app.get('/api/jira/status', (req, res) => {
 });
 
 // GET /api/jira/projects – Fetch Jira projects
-app.get('/api/jira/projects', async (req, res) => {
+/*app.get('/api/jira/projects', async (req, res) => {
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
   }
@@ -104,7 +104,39 @@ app.get('/api/jira/projects', async (req, res) => {
     console.error('Error fetching Jira projects:', err?.response?.data || err.message);
     return res.status(500).json({ error: 'Failed to fetch Jira projects' });
   }
-});
+});*/
+app.post('/api/jira/projects', async (req, res) => {
+    const { key, name, projectTypeKey, leadAccountId } = req.body;
+    if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+      return res.status(401).json({ error: 'Not authenticated with Jira' });
+    }
+  
+    try {
+      const url = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/project`;
+      const response = await axios.post(
+        url,
+        {
+          key,
+          name,
+          projectTypeKey: projectTypeKey || 'software',
+          leadAccountId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${req.session.jiraAccessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return res.json(response.data);
+    } catch (err) {
+      console.error('Error creating project:', err.response?.data || err.message);
+      return res.status(500).json({
+        error: 'Failed to create project',
+        details: err.response?.data || err.message
+      });
+    }
+  });
 
 // GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
 app.get('/api/jira/issue/:issueId', async (req, res) => {
@@ -147,7 +179,7 @@ app.get('/api/jira/issues', async (req, res) => {
 });
 
 // POST /api/jira/issues – Create a new Jira issue
-app.post('/api/jira/issues', async (req, res) => {
+/*app.post('/api/jira/issues', async (req, res) => {
   const { projectKey, summary, description, issueType } = req.body;
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'Not authenticated with Jira' });
@@ -176,7 +208,52 @@ app.post('/api/jira/issues', async (req, res) => {
     console.error('Error creating Jira issue:', err?.response?.data || err.message);
     return res.status(500).json({ error: 'Failed to create Jira issue', details: err?.response?.data });
   }
-});
+});*/
+
+app.post('/api/jira/issues', async (req, res) => {
+    const { projectKey, summary, description, issueTypeId } = req.body;
+    if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
+      return res.status(401).json({ error: 'Not authenticated with Jira' });
+    }
+  
+    // Convert description to ADF format
+    const adfDescription = {
+      type: 'doc',
+      version: 1,
+      content: [{
+        type: 'paragraph',
+        content: [{ type: 'text', text: description || '' }]
+      }]
+    };
+  
+    try {
+      const url = `https://api.atlassian.com/ex/jira/${req.session.jiraSiteId}/rest/api/3/issue`;
+      const response = await axios.post(
+        url,
+        {
+          fields: {
+            project: { key: projectKey },
+            summary: summary,
+            description: adfDescription,
+            issuetype: { id: issueTypeId } // Use ID instead of name
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${req.session.jiraAccessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return res.json(response.data);
+    } catch (err) {
+      console.error('Error creating issue:', err.response?.data || err.message);
+      return res.status(500).json({
+        error: 'Failed to create issue',
+        details: err.response?.data || err.message
+      });
+    }
+  });
 
 // POST /api/jira/issues/:issueIdOrKey/transition – Transition a Jira issue
 app.post('/api/jira/issues/:issueIdOrKey/transition', async (req, res) => {

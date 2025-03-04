@@ -211,7 +211,8 @@
         <li><a href="#"><i class="fas fa-money-bill-wave"></i> Payments</a></li>
         <li><a href="#"><i class="fas fa-comment-alt"></i> Communications</a></li>
         <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
-        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li></ul>
+        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      </ul>
     </div>
     <div class="sidebar-footer">
       <div class="user-info">
@@ -242,7 +243,6 @@
     </div>
 
     <div class="page-content">
-      <!-- Heading & Actions -->
       <div class="page-heading">
         <h1 class="page-title">Projects</h1>
         <div class="page-actions">
@@ -251,7 +251,6 @@
         </div>
       </div>
 
-      <!-- Table of Existing Projects -->
       <table class="projects-table">
         <thead>
           <tr>
@@ -286,8 +285,6 @@
             </td>
           </tr>
         </tbody>
-        <div class="jira-projects-list" id="jiraProjectsContainer"></div>
-
       </table>
 
       <!-- Jira Integration Section -->
@@ -304,6 +301,8 @@
         <!-- Container to display loaded Jira issues -->
         <div class="jira-issues-list" id="jiraIssuesContainer"></div>
       </div>
+
+      <!-- Confluence Integration Section -->
       <div class="integration-section" id="confluenceIntegration">
         <h2>Confluence Integration</h2>
         <div class="integration-buttons">
@@ -349,94 +348,6 @@
     </div>
   </div>
 
-  <!-- Modal for New Project -->
-  <div class="modal-overlay" id="projectModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create New Project</div>
-        <button class="modal-close" id="closeProjectModalBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="projectName">Project Name</label>
-          <input type="text" id="projectName" placeholder="e.g. Mobile App Redesign" />
-        </div>
-        <div class="form-group">
-          <label for="projectOwner">Owner / Manager</label>
-          <input type="text" id="projectOwner" placeholder="e.g. Maria Chen" />
-        </div>
-        <div class="form-group">
-          <label for="projectDeadline">Deadline</label>
-          <input type="date" id="projectDeadline" />
-        </div>
-        <div class="form-group">
-          <label for="projectStatus">Status</label>
-          <input type="text" id="projectStatus" placeholder="e.g. Planning, In Progress" />
-        </div>
-        <div class="form-group">
-          <label for="projectDesc">Description</label>
-          <textarea id="projectDesc" rows="4" placeholder="Project details..."></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelProjectBtn">Cancel</button>
-        <button class="btn btn-primary" id="saveProjectBtn">Save Project</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Creating Jira Issue -->
-  <div class="modal-overlay" id="jiraIssueModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create Jira Issue</div>
-        <button class="modal-close" id="closeJiraIssueModalBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="jiraProjectKey">Project Key</label>
-          <input type="text" id="jiraProjectKey" placeholder="e.g. TEST" />
-        </div>
-        <div class="form-group">
-          <label for="jiraSummary">Issue Summary</label>
-          <input type="text" id="jiraSummary" placeholder="Summary of the issue" />
-        </div>
-        <div class="form-group">
-          <label for="jiraDescription">Issue Description</label>
-          <textarea id="jiraDescription" rows="4" placeholder="Describe the issue in detail"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="jiraIssueType">Issue Type</label>
-          <select id="jiraIssueType">
-            <option value="Task" selected>Task</option>
-            <option value="Bug">Bug</option>
-            <option value="Story">Story</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelJiraIssueBtn">Cancel</button>
-        <button class="btn btn-primary" id="createJiraIssueModalBtn">Create Issue</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Viewing Jira Issue Details -->
-  <div class="modal-overlay" id="jiraIssueViewModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Issue Details</div>
-        <button class="modal-close" id="closeJiraIssueViewModalBtn">&times;</button>
-      </div>
-      <div class="modal-body" id="jiraIssueViewContent">
-        <!-- Issue details will be injected here -->
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" id="closeJiraIssueViewBtn">Close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- JavaScript -->
   <script>
     // Toggle Sidebar for smaller screens
@@ -446,7 +357,7 @@
       sidebar.classList.toggle('active');
     });
 
-    // ---------------- Modal Logic for New Project ----------------
+    // Modal Logic for New Project
     const newProjectBtn = document.getElementById('newProjectBtn');
     const projectModalOverlay = document.getElementById('projectModalOverlay');
     const closeProjectModalBtn = document.getElementById('closeProjectModalBtn');
@@ -482,102 +393,30 @@
       closeProjectModal();
     });
 
-    // ---------------- Modal Logic for Creating Jira Issue ----------------
-    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
-    const jiraIssueModalOverlay = document.getElementById('jiraIssueModalOverlay');
-    const closeJiraIssueModalBtn = document.getElementById('closeJiraIssueModalBtn');
-    const cancelJiraIssueBtn = document.getElementById('cancelJiraIssueBtn');
-    const createJiraIssueModalBtn = document.getElementById('createJiraIssueModalBtn');
-
-    createJiraIssueBtn.addEventListener('click', () => {
-      jiraIssueModalOverlay.classList.add('active');
-    });
-    const closeJiraIssueModal = () => jiraIssueModalOverlay.classList.remove('active');
-    closeJiraIssueModalBtn.addEventListener('click', closeJiraIssueModal);
-    cancelJiraIssueBtn.addEventListener('click', closeJiraIssueModal);
-    createJiraIssueModalBtn.addEventListener('click', async () => {
-      const projectKey = document.getElementById('jiraProjectKey').value;
-      const summary = document.getElementById('jiraSummary').value;
-      const description = document.getElementById('jiraDescription').value;
-      const issueType = document.getElementById('jiraIssueType').value;
-      if (!projectKey || !summary) {
-        alert('Project Key and Issue Summary are required.');
-        return;
-      }
-      try {
-        const res = await fetch('/api/jira/issues', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectKey,
-            summary,
-            description,
-            issueType
-          })
-        });
-        if (!res.ok) throw new Error('Issue creation failed');
-        const data = await res.json();
-        alert(`Created issue ${data.key}!`);
-        closeJiraIssueModal();
-        loadJiraIssues();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to create issue');
-      }
-    });
-
-    // ---------------- Modal Logic for Viewing Jira Issue Details ----------------
-    const jiraIssueViewModalOverlay = document.getElementById('jiraIssueViewModalOverlay');
-    const closeJiraIssueViewModalBtn = document.getElementById('closeJiraIssueViewModalBtn');
-    const closeJiraIssueViewBtn = document.getElementById('closeJiraIssueViewBtn');
-    const jiraIssueViewContent = document.getElementById('jiraIssueViewContent');
-    const closeJiraIssueViewModal = () => jiraIssueViewModalOverlay.classList.remove('active');
-    closeJiraIssueViewModalBtn.addEventListener('click', closeJiraIssueViewModal);
-    closeJiraIssueViewBtn.addEventListener('click', closeJiraIssueViewModal);
-
-    async function viewJiraIssue(issueId) {
-      try {
-        const res = await fetch(`/api/jira/issue/${issueId}`);
-        if (!res.ok) throw new Error('Failed to fetch issue details');
-        const issue = await res.json();
-        jiraIssueViewContent.innerHTML = `
-          <h3>${issue.key}: ${issue.fields.summary}</h3>
-          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
-          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
-          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
-        `;
-        jiraIssueViewModalOverlay.classList.add('active');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to load issue details');
-      }
-    }
-
-    // ---------------- Jira Integration: Connect, Load Issues, and Check Status ----------------
+    // Jira Integration
     const connectJiraBtn = document.getElementById('connectJiraBtn');
     const loadJiraIssuesBtn = document.getElementById('loadJiraIssuesBtn');
+    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
     const jiraIssuesContainer = document.getElementById('jiraIssuesContainer');
 
     connectJiraBtn.addEventListener('click', () => {
       window.location.href = 'https://gitpactserver.onrender.com/auth/jira';
     });
 
-    async function loadJiraIssues() {
+    loadJiraIssuesBtn.addEventListener('click', async () => {
       try {
         const res = await fetch('/api/jira/issues');
-        if (!res.ok) throw new Error('Failed to fetch issues');
         const data = await res.json();
         jiraIssuesContainer.innerHTML = '';
         if (data.issues && Array.isArray(data.issues) && data.issues.length > 0) {
           data.issues.forEach(issue => {
             const item = document.createElement('div');
-            item.classList.add('jira-issue-item');
+            item.classList.add('integration-item');
             item.innerHTML = `
-              <div class="jira-issue-key">${issue.key}</div>
-              <div class="jira-issue-summary">${issue.fields.summary}</div>
-              <div class="jira-issue-status">Status: ${issue.fields.status.name}</div>
+              <div class="integration-key">${issue.key}</div>
+              <div class="integration-summary">${issue.fields.summary}</div>
+              <div class="integration-status">Status: ${issue.fields.status.name}</div>
             `;
-            // When an issue item is clicked, view its details
             item.addEventListener('click', () => viewJiraIssue(issue.key));
             jiraIssuesContainer.appendChild(item);
           });
@@ -588,34 +427,161 @@
         alert('Error loading Jira issues');
         console.error(error);
       }
-    }
+    });
 
-    async function checkJiraStatus() {
+    async function viewJiraIssue(issueId) {
       try {
-        const res = await fetch('/api/jira/status');
-        const status = await res.json();
-        if (status.connected) {
-          connectJiraBtn.textContent = 'Connected to Jira';
-          loadJiraIssues();
-        } else {
-          connectJiraBtn.textContent = 'Connect Jira';
-        }
+        const res = await fetch(`/api/jira/issue/${issueId}`);
+        const issue = await res.json();
+        const issueDetails = `
+          <h3>${issue.key}: ${issue.fields.summary}</h3>
+          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
+          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
+          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
+        `;
+        alert(issueDetails);
       } catch (err) {
-        console.error("Error checking Jira status:", err);
+        alert('Failed to load Jira issue details');
+        console.error(err);
       }
     }
 
-    window.addEventListener('load', checkJiraStatus);
+    // Confluence Integration
+    const connectConfluenceBtn = document.getElementById('connectConfluenceBtn');
+    const loadConfluencePagesBtn = document.getElementById('loadConfluencePagesBtn');
+    const createConfluencePageBtn = document.getElementById('createConfluencePageBtn');
+    const confluencePagesContainer = document.getElementById('confluencePagesContainer');
 
-    // Optional: Add event listeners for project view buttons (for your platform's projects)
-    document.getElementById('projectsTableBody').addEventListener('click', (e) => {
-      if (e.target.classList.contains('view')) {
-        const projectName = e.target.getAttribute('data-project');
-        // Here you would navigate to a detailed view of the project.
-        // For demonstration, we'll simply alert the project name.
-        alert(`Viewing details for project: ${projectName}`);
+    connectConfluenceBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/confluence';
+    });
+
+    loadConfluencePagesBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/confluence/pages');
+        const data = await res.json();
+        confluencePagesContainer.innerHTML = '';
+        if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+          data.pages.forEach(page => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${page.title}</div>
+              <div class="integration-summary">${page.body}</div>
+            `;
+            confluencePagesContainer.appendChild(item);
+          });
+        } else {
+          confluencePagesContainer.innerHTML = '<p>No pages found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading Confluence pages');
+        console.error(error);
       }
     });
+
+    // GitHub Integration
+    const connectGitHubBtn = document.getElementById('connectGitHubBtn');
+    const loadGitHubReposBtn = document.getElementById('loadGitHubReposBtn');
+    const createGitHubRepoBtn = document.getElementById('createGitHubRepoBtn');
+    const githubReposContainer = document.getElementById('githubReposContainer');
+
+    connectGitHubBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/github';
+    });
+
+    loadGitHubReposBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/github/repos');
+        const data = await res.json();
+        githubReposContainer.innerHTML = '';
+        if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
+          data.repos.forEach(repo => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${repo.name}</div>
+              <div class="integration-summary">${repo.description}</div>
+            `;
+            githubReposContainer.appendChild(item);
+          });
+        } else {
+          githubReposContainer.innerHTML = '<p>No repositories found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading GitHub repositories');
+        console.error(error);
+      }
+    });
+
+    // GitLab Integration
+    const connectGitLabBtn = document.getElementById('connectGitLabBtn');
+    const loadGitLabReposBtn = document.getElementById('loadGitLabReposBtn');
+    const createGitLabRepoBtn = document.getElementById('createGitLabRepoBtn');
+    const gitlabReposContainer = document.getElementById('gitlabReposContainer');
+
+    connectGitLabBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/gitlab';
+    });
+
+    loadGitLabReposBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/gitlab/repos');
+        const data = await res.json();
+        gitlabReposContainer.innerHTML = '';
+        if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
+          data.repos.forEach(repo => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${repo.name}</div>
+              <div class="integration-summary">${repo.description}</div>
+            `;
+            gitlabReposContainer.appendChild(item);
+          });
+        } else {
+          gitlabReposContainer.innerHTML = '<p>No repositories found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading GitLab repositories');
+        console.error(error);
+      }
+    });
+
+    // SonarQube Integration
+    const connectSonarQubeBtn = document.getElementById('connectSonarQubeBtn');
+    const loadSonarQubeProjectsBtn = document.getElementById('loadSonarQubeProjectsBtn');
+    const createSonarQubeProjectBtn = document.getElementById('createSonarQubeProjectBtn');
+    const sonarqubeProjectsContainer = document.getElementById('sonarqubeProjectsContainer');
+
+    connectSonarQubeBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/sonarqube';
+    });
+
+    loadSonarQubeProjectsBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/sonarqube/projects');
+        const data = await res.json();
+        sonarqubeProjectsContainer.innerHTML = '';
+        if (data.projects && Array.isArray(data.projects) && data.projects.length > 0) {
+          data.projects.forEach(project => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${project.name}</div>
+              <div class="integration-summary">${project.description}</div>
+            `;
+            sonarqubeProjectsContainer.appendChild(item);
+          });
+        } else {
+          sonarqubeProjectsContainer.innerHTML = '<p>No projects found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading SonarQube projects');
+        console.error(error);
+      }
+    });
+
   </script>
 </body>
 </html>

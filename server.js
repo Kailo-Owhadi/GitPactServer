@@ -140,9 +140,6 @@ app.post('/api/jira/projects', async (req, res) => {
 
 // GET /api/jira/issue/:issueId – Fetch detailed info for a single Jira issue
 app.get('/api/jira/issue/:issueId', async (req, res) => {
-    console.log(!req.session.jiraAccessTokn);
-    console.log(req.session.jiraSiteId);
-    console.log(req.params.issueId);
   if (!req.session.jiraAccessToken || !req.session.jiraSiteId) {
     return res.status(401).json({ error: 'User not authenticated with Jira' });
   }

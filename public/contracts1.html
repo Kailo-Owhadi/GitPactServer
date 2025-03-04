@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitPact - Contracts</title>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --primary: #3a36e0;
+      --primary-light: #6e6bff;
+      --secondary: #34d399;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --white: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      background-color: var(--dark);
+      color: var(--white);
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+    }
+    .sidebar-header {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-header img {
+      height: 32px;
+      margin-right: 0.5rem;
+    }
+    .sidebar-brand {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--white);
+    }
+    .sidebar-menu {
+      padding: 1rem 0;
+      flex-grow: 1;
+    }
+    .sidebar-menu ul {
+      list-style: none;
+    }
+    .sidebar-menu li {
+      margin-bottom: 0.25rem;
+    }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--gray-300);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border-left: 3px solid var(--secondary);
+    }
+    .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+    .sidebar-menu i {
+      margin-right: 0.75rem;
+      width: 20px;
+      text-align: center;
+    }
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 0.75rem;
+    }
+    .user-details {
+      flex-grow: 1;
+    }
+    .user-name {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--gray-300);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex-grow: 1;
+      margin-left: 250px;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      width: calc(100% - 250px);
+      position: relative; /* for potential overlay panels */
+    }
+    .topbar {
+      background-color: var(--white);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      color: var(--gray-700);
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.25rem;
+      display: none;
+    }
+    .search-bar {
+      position: relative;
+      flex-grow: 1;
+      max-width: 500px;
+      margin: 0 1rem;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid var(--gray-200);
+      border-radius: 9999px;
+      background-color: var(--gray-100);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-bar input:focus {
+      border-color: var(--primary);
+      background-color: var(--white);
+    }
+    .search-bar i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+    }
+    .topbar-tools {
+      display: flex;
+      align-items: center;
+    }
+    .topbar-btn {
+      background: none;
+      border: none;
+      color: var(--gray-700);
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 1rem;
+      position: relative;
+      padding: 0.5rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--danger);
+      color: var(--white);
+      font-size: 0.6rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* PAGE CONTENT: CONTRACTS */
+    .contracts-container {
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .contracts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .contracts-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .contracts-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      border: none;
+    }
+    .btn i {
+      margin-right: 0.5rem;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--gray-300);
+    }
+    .btn-outline:hover {
+      background-color: var(--gray-100);
+    }
+    .btn-sm {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    /* CONTRACTS TABLE */
+    .contracts-table-wrapper {
+      background-color: var(--white);
+      border-radius: 0.5rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .contracts-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .contracts-table thead {
+      background-color: var(--gray-200);
+    }
+    .contracts-table th,
+    .contracts-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .contracts-table th {
+      color: var(--gray-700);
+      font-weight: 600;
+    }
+    .contracts-table tbody tr:hover {
+      background-color: var(--gray-100);
+    }
+    .status-pill {
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .status-draft {
+      background-color: var(--gray-300);
+      color: var(--gray-700);
+    }
+    .status-active {
+      background-color: var(--secondary);
+      color: var(--white);
+    }
+    .status-completed {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    /* MILESTONE SAST INDICATOR */
+    .sast-status {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+    }
+    .sast-status i {
+      margin-right: 0.25rem;
+    }
+    .sast-ok {
+      background-color: var(--secondary);
+      color: var(--white);
+    }
+    .sast-warn {
+      background-color: var(--warning);
+      color: var(--white);
+    }
+    .sast-fail {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+
+    /* ACTIVITY LOG / AUDIT TRAIL */
+    .audit-trail {
+      background-color: var(--white);
+      border-radius: 0.5rem;
+      box-shadow: var(--shadow);
+      margin-top: 1.5rem;
+      overflow: hidden;
+    }
+    .audit-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .audit-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .audit-body {
+      padding: 1rem;
+    }
+    .audit-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    .audit-icon {
+      font-size: 1.25rem;
+      margin-right: 0.75rem;
+      margin-top: 0.2rem;
+      color: var(--gray-500);
+    }
+    .audit-content {
+      font-size: 0.875rem;
+    }
+
+    /* CREATE CONTRACT MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background-color: var(--white);
+      border-radius: 0.5rem;
+      width: 600px;
+      max-width: 90%;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .modal-header,
+    .modal-footer {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .modal-header {
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--gray-500);
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      outline: none;
+    }
+    .form-group textarea {
+      resize: vertical;
+    }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    /* EXTRA: REGION DISCLAIMER BOX */
+    .region-disclaimer {
+      background-color: var(--gray-100);
+      padding: 0.75rem;
+      border-left: 4px solid var(--warning);
+      font-size: 0.75rem;
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+      display: none; /* shown dynamically if region is selected */
+    }
+    .region-disclaimer strong {
+      color: var(--dark);
+    }
+
+    /* COLLABORATION SIDEBAR (REAL-TIME CHAT, COMMENTS, MENTIONS, ETC.) */
+    .collaboration-panel {
+      position: fixed;
+      right: -350px; /* hidden by default */
+      top: 0;
+      height: 100%;
+      width: 350px;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      border-left: 1px solid var(--gray-200);
+      transition: right 0.3s ease;
+      z-index: 1000; /* above main-content but below modal */
+      display: flex;
+      flex-direction: column;
+    }
+    .collab-header {
+      background-color: var(--gray-100);
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .collab-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .collab-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--gray-500);
+      cursor: pointer;
+    }
+    .collab-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+    .message-item {
+      margin-bottom: 1rem;
+    }
+    .message-user {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .message-text {
+      line-height: 1.4;
+    }
+    .collab-input {
+      padding: 1rem;
+      border-top: 1px solid var(--gray-200);
+    }
+    .collab-input textarea {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      resize: none;
+      margin-bottom: 0.5rem;
+      outline: none;
+    }
+    .collab-input .btn-send {
+      float: right;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      border: none;
+      cursor: pointer;
+    }
+    .collab-input .btn-send:hover {
+      background-color: var(--primary-light);
+    }
+    .collab-open {
+      right: 0; /* show panel */
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+      .toggle-sidebar {
+        display: block;
+      }
+      .collaboration-panel {
+        width: 100%;
+        right: -100%;
+      }
+      .collab-open {
+        right: 0;
+      }
+    }
+    @media (max-width: 480px) {
+      .search-bar {
+        display: none;
+      }
+      .contracts-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="logo.png" style="width: 30%; height: auto">
+        <div class="sidebar-brand">GitPact</div>
+    </div>
+    <div class="sidebar-menu">
+      <ul>
+        <li><a href="dashboard1.html" onclick="window.location.href='dashboard1.html';"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="projects1.html" class="active"><i class="fas fa-project-diagram"></i> Projects</a></li>
+        <li><a href="contracts1.html"><i class="fas fa-file-contract"></i> Contracts</a></li>
+        <li><a href="freelancers2.html"><i class="fas fa-users"></i> Freelancers</a></li>
+        <li><a href="#"><i class="fas fa-money-bill-wave"></i> Payments</a></li>
+        <li><a href="#"><i class="fas fa-comment-alt"></i> Communications</a></li>
+        <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <img src="/api/placeholder/36/36" alt="User Avatar" />
+        </div>
+        <div class="user-details">
+          <div class="user-name">Alex Johnson</div>
+          <div class="user-role">Project Manager</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button class="toggle-sidebar"><i class="fas fa-bars"></i></button>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search contracts, projects, freelancers..." />
+      </div>
+      <div class="topbar-tools">
+        <button class="topbar-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">2</span>
+        </button>
+        <button class="topbar-btn">
+          <i class="fas fa-envelope"></i>
+          <span class="notification-badge">4</span>
+        </button>
+        <!-- Collaboration Panel Toggle -->
+        <button class="topbar-btn" id="toggleCollabBtn" title="Open Collaboration Panel">
+          <i class="fas fa-comments"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTRACTS CONTENT -->
+    <div class="contracts-container">
+      <div class="contracts-header">
+        <h1 class="contracts-title">Contracts</h1>
+        <div class="contracts-actions">
+          <button class="btn btn-outline" id="filterContractsBtn">
+            <i class="fas fa-filter"></i> Filter
+          </button>
+          <button class="btn btn-primary" id="createContractBtn">
+            <i class="fas fa-plus"></i> New Contract
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTRACTS TABLE -->
+      <div class="contracts-table-wrapper">
+        <table class="contracts-table">
+          <thead>
+            <tr>
+              <th>Contract Name</th>
+              <th>Jurisdiction</th>
+              <th>Parties</th>
+              <th>Milestones</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="contractsTableBody">
+            <!-- SAMPLE ROWS with new SAST placeholders & code commit references -->
+            <tr>
+              <td>Mobile App NDA</td>
+              <td>California, USA</td>
+              <td>In-House, Jane Doe</td>
+              <td>
+                UI/UX Review
+                <span class="sast-status sast-ok"
+                  ><i class="fas fa-shield-check"></i> SAST: OK</span
+                ><br/>
+                <small>Linked Commit: <a href="#">#abc123</a></small>
+              </td>
+              <td><span class="status-pill status-active">Active</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-pen"></i> Edit
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>E-commerce Backend IP Clause</td>
+              <td>Ontario, Canada</td>
+              <td>In-House, James Wilson</td>
+              <td>
+                API Integration
+                <span class="sast-status sast-warn"
+                  ><i class="fas fa-exclamation-triangle"></i> SAST: WARN</span
+                ><br/>
+                <small>Linked Commit: <a href="#">#def456</a></small>
+              </td>
+              <td><span class="status-pill status-draft">Draft</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-pen"></i> Edit
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Customer Portal Full Contract</td>
+              <td>Berlin, Germany</td>
+              <td>In-House, Alex Johnson</td>
+              <td>
+                Security Review
+                <span class="sast-status sast-fail"
+                  ><i class="fas fa-bug"></i> SAST: FAIL</span
+                ><br/>
+                <small>Linked Commit: <a href="#">#zzz999</a></small>
+              </td>
+              <td><span class="status-pill status-completed">Completed</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-outline btn-sm" disabled>
+                  <i class="fas fa-pen"></i> Edit
+                </button>
+              </td>
+            </tr>
+            <!-- Additional rows dynamically loaded... -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- AUDIT TRAIL -->
+      <div class="audit-trail">
+        <div class="audit-header">
+          <div class="audit-title">Recent Contract Activity</div>
+          <button class="btn btn-outline btn-sm">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+        <div class="audit-body">
+          <div class="audit-item">
+            <div class="audit-icon">
+              <i class="fas fa-file-signature"></i>
+            </div>
+            <div class="audit-content">
+              Contract "<strong>Mobile App NDA</strong>" was signed by
+              <strong>Jane Doe</strong> on 02/28/2025.
+            </div>
+          </div>
+          <div class="audit-item">
+            <div class="audit-icon">
+              <i class="fas fa-edit"></i>
+            </div>
+            <div class="audit-content">
+              Contract "<strong>E-commerce Backend IP Clause</strong>" was edited
+              (milestone updated) by <strong>James Wilson</strong> on 03/01/2025.
+            </div>
+          </div>
+          <div class="audit-item">
+            <div class="audit-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="audit-content">
+              Security check completed for
+              "<strong>Customer Portal Full Contract</strong>". No vulnerabilities
+              found.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE CONTRACT MODAL -->
+    <div class="modal-overlay" id="contractModalOverlay">
+      <div class="modal" id="contractModal">
+        <div class="modal-header">
+          <h2 class="modal-title">Create New Contract</h2>
+          <button class="modal-close" id="closeModalBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- DISCLAIMER BOX FOR JURISDICTION -->
+          <div class="region-disclaimer" id="regionDisclaimer">
+            <!-- Text is inserted dynamically based on region selection -->
+          </div>
+
+          <div class="form-group">
+            <label for="contractName">Contract Name</label>
+            <input
+              type="text"
+              id="contractName"
+              placeholder="e.g. Mobile App Development Contract"
+            />
+          </div>
+          <div class="form-group">
+            <label for="jurisdiction">Jurisdiction</label>
+            <select id="jurisdiction">
+              <option value="">Select Region / Country</option>
+              <option value="USA-CA">California, USA</option>
+              <option value="USA-NY">New York, USA (FIFA compliance)</option>
+              <option value="CAN-ON">Ontario, Canada</option>
+              <option value="DEU-BE">Berlin, Germany</option>
+              <option value="IND-MH">Maharashtra, India</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="partiesInvolved">Parties Involved</label>
+            <input
+              type="text"
+              id="partiesInvolved"
+              placeholder="e.g. Acme Corp, Jane Doe"
+            />
+          </div>
+          <div class="form-group">
+            <label for="milestones">Milestones (optional)</label>
+            <input
+              type="text"
+              id="milestones"
+              placeholder="e.g. Design Review, API Integration"
+            />
+          </div>
+          <div class="form-group">
+            <label for="contractClauses">Include Clauses</label>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <label>
+                <input type="checkbox" id="ndaClause" checked /> NDA
+              </label>
+              <label>
+                <input type="checkbox" id="ipClause" checked /> IP Clause
+              </label>
+              <label>
+                <input type="checkbox" id="regionRegulations" checked />
+                Region-Specific Regulations
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contractDetails">Contract Details</label>
+            <textarea
+              id="contractDetails"
+              rows="4"
+              placeholder="Detailed contract text, references, disclaimers, etc."
+            ></textarea>
+          </div>
+          <!-- E-sign placeholder -->
+          <div class="form-group">
+            <label>E-sign Integration</label>
+            <button class="btn btn-outline btn-sm" id="eSignBtn">
+              <i class="fas fa-signature"></i> Initiate E-sign
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancelContractBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveContractBtn">
+            <i class="fas fa-save"></i> Save Contract
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLABORATION SIDEBAR (HIDDEN BY DEFAULT) -->
+  <div class="collaboration-panel" id="collabPanel">
+    <div class="collab-header">
+      <div class="collab-title">Collaboration & Chat</div>
+      <button class="collab-close-btn" id="closeCollabBtn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="collab-messages" id="collabMessages">
+      <!-- Example chat messages -->
+      <div class="message-item">
+        <div class="message-user">Jane Doe:</div>
+        <div class="message-text">
+          Can we clarify the IP clause scope for the E-commerce contract?
+        </div>
+      </div>
+      <div class="message-item">
+        <div class="message-user">Alex Johnson:</div>
+        <div class="message-text">
+          Sure, let's add a note referencing the latest region-specific disclaimers.
+        </div>
+      </div>
+    </div>
+    <div class="collab-input">
+      <textarea
+        id="collabInput"
+        rows="2"
+        placeholder="Type a comment or @mention someone..."
+      ></textarea>
+      <button class="btn-send" id="sendCollabBtn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    /****************************************************
+     *  SIDEBAR (MOBILE) TOGGLE
+     ****************************************************/
+    const toggleSidebarBtn = document.querySelector(".toggle-sidebar");
+    const sidebar = document.querySelector(".sidebar");
+    toggleSidebarBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+    });
+
+    /****************************************************
+     *  MODAL & CONTRACT CREATION
+     ****************************************************/
+    const createContractBtn = document.getElementById("createContractBtn");
+    const contractModalOverlay = document.getElementById("contractModalOverlay");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelContractBtn = document.getElementById("cancelContractBtn");
+    const saveContractBtn = document.getElementById("saveContractBtn");
+
+    // Open Contract Modal
+    createContractBtn.addEventListener("click", () => {
+      contractModalOverlay.style.display = "flex";
+    });
+    function closeContractModal() {
+      contractModalOverlay.style.display = "none";
+    }
+    closeModalBtn.addEventListener("click", closeContractModal);
+    cancelContractBtn.addEventListener("click", closeContractModal);
+
+    // Region disclaimers sample data
+    const regionDisclaimerData = {
+      "USA-CA":
+        "Under California law, certain freelance protection and IP transfer clauses are mandatory. Make sure to abide by CA Civil Code 1234.",
+      "USA-NY":
+        "New York's Freelance Isn't Free Act (FIFA) includes extra timelines for payment and dispute resolution. Non-compliance can lead to penalties.",
+      "CAN-ON":
+        "Ontario-based contracts must comply with the Employment Standards Act if the freelancer is considered dependent. Consult legal advice.",
+      "DEU-BE":
+        "Under German law (Berlin region), personal data usage must adhere to GDPR and local regulations for intellectual property.",
+      "IND-MH":
+        "Maharashtra, India: Check local labor codes for freelance engagements and ensure cross-border IP clauses are recognized."
+    };
+
+    // Show disclaimers dynamically
+    const jurisdictionSelect = document.getElementById("jurisdiction");
+    const regionDisclaimerBox = document.getElementById("regionDisclaimer");
+    jurisdictionSelect.addEventListener("change", () => {
+      const selectedValue = jurisdictionSelect.value;
+      if (regionDisclaimerData[selectedValue]) {
+        regionDisclaimerBox.innerHTML = `
+          <strong>Important Notice:</strong> ${
+            regionDisclaimerData[selectedValue]
+          }
+        `;
+        regionDisclaimerBox.style.display = "block";
+      } else {
+        regionDisclaimerBox.innerHTML = "";
+        regionDisclaimerBox.style.display = "none";
+      }
+    });
+
+    // Save Contract (placeholder)
+    saveContractBtn.addEventListener("click", () => {
+      const name = document.getElementById("contractName").value.trim();
+      const jurisdiction = document.getElementById("jurisdiction").value;
+      const parties = document.getElementById("partiesInvolved").value.trim();
+      const milestones = document.getElementById("milestones").value.trim();
+      const nda = document.getElementById("ndaClause").checked;
+      const ip = document.getElementById("ipClause").checked;
+      const regionReg = document.getElementById("regionRegulations").checked;
+      const details = document.getElementById("contractDetails").value.trim();
+
+      // In a real app, you'd send these to your backend via Ajax/Fetch
+      alert(
+        "Contract saved (placeholder).\\nName: " +
+          name +
+          "\\nRegion: " +
+          jurisdiction +
+          "\\nParties: " +
+          parties +
+          "\\nMilestones: " +
+          milestones +
+          "\\nClauses => NDA:" +
+          nda +
+          ", IP:" +
+          ip +
+          ", RegionReg:" +
+          regionReg
+      );
+      closeContractModal();
+    });
+
+    // E-sign Placeholder
+    const eSignBtn = document.getElementById("eSignBtn");
+    eSignBtn.addEventListener("click", () => {
+      alert("E-sign initiated (placeholder).");
+    });
+
+    /****************************************************
+     *  COLLABORATION SIDEBAR
+     ****************************************************/
+    const toggleCollabBtn = document.getElementById("toggleCollabBtn");
+    const collabPanel = document.getElementById("collabPanel");
+    const closeCollabBtn = document.getElementById("closeCollabBtn");
+    const sendCollabBtn = document.getElementById("sendCollabBtn");
+    const collabMessages = document.getElementById("collabMessages");
+    const collabInput = document.getElementById("collabInput");
+
+    // Open/Close Collaboration Panel
+    toggleCollabBtn.addEventListener("click", () => {
+      collabPanel.classList.add("collab-open");
+    });
+    closeCollabBtn.addEventListener("click", () => {
+      collabPanel.classList.remove("collab-open");
+    });
+
+    // Send Collab Message (placeholder mention system)
+    sendCollabBtn.addEventListener("click", () => {
+      const txt = collabInput.value.trim();
+      if (txt) {
+        const msgItem = document.createElement("div");
+        msgItem.classList.add("message-item");
+        msgItem.innerHTML = `
+          <div class="message-user">You:</div>
+          <div class="message-text">${highlightMentions(txt)}</div>
+        `;
+        collabMessages.appendChild(msgItem);
+        collabMessages.scrollTop = collabMessages.scrollHeight;
+        collabInput.value = "";
+        // In reality, you'd emit a WebSocket event or similar to broadcast the message
+      }
+    });
+
+    // Quick function to highlight @mentions
+    function highlightMentions(message) {
+      // This is a simplified approach.
+      // Real mention systems might do complex user lookups, etc.
+      return message.replace(/@(\w+)/g, "<strong>@$1</strong>");
+    }
+  </script>
+</body>
+</html>

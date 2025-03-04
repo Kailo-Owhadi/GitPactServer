@@ -70,6 +70,66 @@
     .table-action-btn.view { background-color: var(--secondary); color: var(--white); }
     .table-action-btn.edit { background-color: var(--warning); color: var(--white); }
     .table-action-btn.delete { background-color: var(--danger); color: var(--white); }
+    .integration-section { background-color: var(--white); box-shadow: var(--shadow); padding: 1rem; border-radius: 0.375rem; margin-bottom: 1.5rem; }
+    .integration-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .integration-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--gray-200); border-radius: 0.375rem; padding: 0.5rem; }
+    .integration-item { padding: 0.5rem; border-bottom: 1px solid var(--gray-200); display: flex; flex-direction: column; cursor: pointer; }
+    .integration-item:hover { background-color: var(--gray-100); }
+    .integration-item:last-child { border-bottom: none; }
+    .integration-key { font-weight: 600; color: var(--primary); }
+    .integration-summary { font-size: 0.875rem; margin: 0.25rem 0; }
+    .integration-status { font-size: 0.75rem; color: var(--gray-500); }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); position: fixed; }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-left: 0; width: 100%; }
+      .toggle-sidebar { display: block; }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--gray-100); color: var(--gray-700); display: flex; min-height: 100vh; overflow-x: hidden; }
+    .sidebar { width: 250px; background-color: var(--dark); color: var(--white); transition: all 0.3s; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+    .sidebar-header { padding: 1.5rem; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-header img { height: 32px; margin-right: 0.5rem; }
+    .sidebar-brand { font-weight: 700; font-size: 1.25rem; }
+    .sidebar-menu { padding: 1rem 0; flex-grow: 1; }
+    .sidebar-menu ul { list-style: none; }
+    .sidebar-menu li { margin-bottom: 0.25rem; }
+    .sidebar-menu i { margin-right: 0.75rem; width: 20px; text-align: center; }
+    .sidebar-menu a { display: flex; align-items: center; padding: 0.75rem 1.5rem; color: var(--gray-300); text-decoration: none; transition: all 0.2s; }
+    .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(255,255,255,0.1); color: var(--white); border-left: 3px solid var(--secondary); }
+    .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .user-info { display: flex; align-items: center; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; margin-right: 0.75rem; }
+    .main-content { flex-grow: 1; margin-left: 250px; transition: all 0.3s; display: flex; flex-direction: column; width: calc(100% - 250px); }
+    .topbar { background-color: var(--white); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 99; }
+    .toggle-sidebar { background: none; border: none; color: var(--gray-700); cursor: pointer; font-size: 1.25rem; padding: 0.25rem; display: none; }
+    .search-bar { position: relative; flex-grow: 1; max-width: 500px; margin: 0 1rem; }
+    .search-bar input { width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--gray-200); border-radius: 9999px; background-color: var(--gray-100); outline: none; transition: all 0.2s; }
+    .search-bar input:focus { border-color: var(--primary); background-color: var(--white); }
+    .search-bar i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray-500); }
+    .topbar-tools { display: flex; align-items: center; }
+    .topbar-btn { background: none; border: none; color: var(--gray-700); cursor: pointer; font-size: 1rem; margin-left: 1rem; position: relative; padding: 0.5rem; }
+    .notification-badge { position: absolute; top: 0; right: 0; background-color: var(--danger); color: var(--white); font-size: 0.6rem; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .page-content { padding: 1.5rem; overflow-y: auto; }
+    .page-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .page-actions { display: flex; gap: 0.5rem; }
+    .btn { padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; border: none; }
+    .btn i { margin-right: 0.5rem; }
+    .btn-primary { background-color: var(--primary); color: var(--white); }
+    .btn-primary:hover { background-color: var(--primary-light); }
+    .btn-outline { background-color: transparent; border: 1px solid var(--gray-300); }
+    .btn-outline:hover { background-color: var(--gray-100); }
+    .projects-table { width: 100%; border-collapse: collapse; background-color: var(--white); box-shadow: var(--shadow); margin-bottom: 2rem; border-radius: 0.375rem; overflow: hidden; }
+    .projects-table thead { background-color: var(--gray-200); }
+    .projects-table th, .projects-table td { text-align: left; padding: 0.75rem 1rem; font-size: 0.875rem; }
+    .projects-table th { font-weight: 600; color: var(--gray-700); }
+    .projects-table tr { border-bottom: 1px solid var(--gray-200); }
+    .projects-table tr:last-child { border-bottom: none; }
+    .table-action-btn { padding: 0.25rem 0.5rem; border: none; cursor: pointer; font-size: 0.75rem; border-radius: 0.25rem; margin-right: 0.25rem; }
+    .table-action-btn.view { background-color: var(--secondary); color: var(--white); }
+    .table-action-btn.edit { background-color: var(--warning); color: var(--white); }
+    .table-action-btn.delete { background-color: var(--danger); color: var(--white); }
     .jira-section { background-color: var(--white); box-shadow: var(--shadow); padding: 1rem; border-radius: 0.375rem; margin-bottom: 1.5rem; }
     .jira-section h2 { margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; }
     .jira-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
@@ -139,17 +199,16 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <img src="/api/placeholder/32/32" alt="GitPact Logo" />
+      <img src="logo.png" style="width: 30%; height: auto">
       <div class="sidebar-brand">GitPact</div>
     </div>
     <div class="sidebar-menu">
       <ul>
-        <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
-        <li><a href="#" class="active"><i class="fas fa-project-diagram"></i> Projects</a></li>
-        <li><a href="#"><i class="fas fa-file-contract"></i> Contracts Hub</a></li>
-        <li><a href="#"><i class="fas fa-users"></i> Freelancers</a></li>
-        <li><a href="#"><i class="fas fa-code"></i> Code Integration</a></li>
-        <li><a href="#"><i class="fas fa-money-bill-wave"></i> Finance Center</a></li>
+        <li><a href="dashboard1.html" onclick="window.location.href='dashboard1.html';"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="projects1.html" class="active"><i class="fas fa-project-diagram"></i> Projects</a></li>
+        <li><a href="contracts1.html"><i class="fas fa-file-contract"></i> Contracts</a></li>
+        <li><a href="freelancers2.html"><i class="fas fa-users"></i> Freelancers</a></li>
+        <li><a href="#"><i class="fas fa-money-bill-wave"></i> Payments</a></li>
         <li><a href="#"><i class="fas fa-comment-alt"></i> Communications</a></li>
         <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
         <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
@@ -184,7 +243,6 @@
     </div>
 
     <div class="page-content">
-      <!-- Heading & Actions -->
       <div class="page-heading">
         <h1 class="page-title">Projects</h1>
         <div class="page-actions">
@@ -193,7 +251,6 @@
         </div>
       </div>
 
-      <!-- Table of Existing Projects -->
       <table class="projects-table">
         <thead>
           <tr>
@@ -244,93 +301,49 @@
         <!-- Container to display loaded Jira issues -->
         <div class="jira-issues-list" id="jiraIssuesContainer"></div>
       </div>
-    </div>
-  </div>
 
-  <!-- Modal for New Project -->
-  <div class="modal-overlay" id="projectModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create New Project</div>
-        <button class="modal-close" id="closeProjectModalBtn">&times;</button>
+      <!-- Confluence Integration Section -->
+      <div class="integration-section" id="confluenceIntegration">
+        <h2>Confluence Integration</h2>
+        <div class="integration-buttons">
+          <button class="btn btn-outline" id="connectConfluenceBtn"><i class="fab fa-confluence"></i> Connect Confluence</button>
+          <button class="btn btn-primary" id="loadConfluencePagesBtn"><i class="fas fa-sync-alt"></i> Load Pages</button>
+          <button class="btn btn-outline" id="createConfluencePageBtn"><i class="fas fa-plus"></i> Create Page</button>
+        </div>
+        <div class="integration-list" id="confluencePagesContainer"></div>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="projectName">Project Name</label>
-          <input type="text" id="projectName" placeholder="e.g. Mobile App Redesign" />
-        </div>
-        <div class="form-group">
-          <label for="projectOwner">Owner / Manager</label>
-          <input type="text" id="projectOwner" placeholder="e.g. Maria Chen" />
-        </div>
-        <div class="form-group">
-          <label for="projectDeadline">Deadline</label>
-          <input type="date" id="projectDeadline" />
-        </div>
-        <div class="form-group">
-          <label for="projectStatus">Status</label>
-          <input type="text" id="projectStatus" placeholder="e.g. Planning, In Progress" />
-        </div>
-        <div class="form-group">
-          <label for="projectDesc">Description</label>
-          <textarea id="projectDesc" rows="4" placeholder="Project details..."></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelProjectBtn">Cancel</button>
-        <button class="btn btn-primary" id="saveProjectBtn">Save Project</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Modal for Creating Jira Issue -->
-  <div class="modal-overlay" id="jiraIssueModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Create Jira Issue</div>
-        <button class="modal-close" id="closeJiraIssueModalBtn">&times;</button>
+      <!-- GitHub Integration Section -->
+      <div class="integration-section" id="githubIntegration">
+        <h2>GitHub Integration</h2>
+        <div class="integration-buttons">
+          <button class="btn btn-outline" id="connectGitHubBtn"><i class="fab fa-github"></i> Connect GitHub</button>
+          <button class="btn btn-primary" id="loadGitHubReposBtn"><i class="fas fa-sync-alt"></i> Load Repos</button>
+          <button class="btn btn-outline" id="createGitHubRepoBtn"><i class="fas fa-plus"></i> Create Repo</button>
+        </div>
+        <div class="integration-list" id="githubReposContainer"></div>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="jiraProjectKey">Project Key</label>
-          <input type="text" id="jiraProjectKey" placeholder="e.g. TEST" />
-        </div>
-        <div class="form-group">
-          <label for="jiraSummary">Issue Summary</label>
-          <input type="text" id="jiraSummary" placeholder="Summary of the issue" />
-        </div>
-        <div class="form-group">
-          <label for="jiraDescription">Issue Description</label>
-          <textarea id="jiraDescription" rows="4" placeholder="Describe the issue in detail"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="jiraIssueType">Issue Type</label>
-          <select id="jiraIssueType">
-            <option value="Task" selected>Task</option>
-            <option value="Bug">Bug</option>
-            <option value="Story">Story</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelJiraIssueBtn">Cancel</button>
-        <button class="btn btn-primary" id="createJiraIssueModalBtn">Create Issue</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Modal for Viewing Jira Issue Details -->
-  <div class="modal-overlay" id="jiraIssueViewModalOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Issue Details</div>
-        <button class="modal-close" id="closeJiraIssueViewModalBtn">&times;</button>
+      <!-- GitLab Integration Section -->
+      <div class="integration-section" id="gitlabIntegration">
+        <h2>GitLab Integration</h2>
+        <div class="integration-buttons">
+          <button class="btn btn-outline" id="connectGitLabBtn"><i class="fab fa-gitlab"></i> Connect GitLab</button>
+          <button class="btn btn-primary" id="loadGitLabReposBtn"><i class="fas fa-sync-alt"></i> Load Repos</button>
+          <button class="btn btn-outline" id="createGitLabRepoBtn"><i class="fas fa-plus"></i> Create Repo</button>
+        </div>
+        <div class="integration-list" id="gitlabReposContainer"></div>
       </div>
-      <div class="modal-body" id="jiraIssueViewContent">
-        <!-- Issue details will be injected here -->
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" id="closeJiraIssueViewBtn">Close</button>
+
+      <!-- SonarQube Integration Section -->
+      <div class="integration-section" id="sonarqubeIntegration">
+        <h2>SonarQube Integration</h2>
+        <div class="integration-buttons">
+          <button class="btn btn-outline" id="connectSonarQubeBtn"><i class="fab fa-sonarqube"></i> Connect SonarQube</button>
+          <button class="btn btn-primary" id="loadSonarQubeProjectsBtn"><i class="fas fa-sync-alt"></i> Load Projects</button>
+          <button class="btn btn-outline" id="createSonarQubeProjectBtn"><i class="fas fa-plus"></i> Create Project</button>
+        </div>
+        <div class="integration-list" id="sonarqubeProjectsContainer"></div>
       </div>
     </div>
   </div>
@@ -344,7 +357,7 @@
       sidebar.classList.toggle('active');
     });
 
-    // ---------------- Modal Logic for New Project ----------------
+    // Modal Logic for New Project
     const newProjectBtn = document.getElementById('newProjectBtn');
     const projectModalOverlay = document.getElementById('projectModalOverlay');
     const closeProjectModalBtn = document.getElementById('closeProjectModalBtn');
@@ -380,102 +393,30 @@
       closeProjectModal();
     });
 
-    // ---------------- Modal Logic for Creating Jira Issue ----------------
-    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
-    const jiraIssueModalOverlay = document.getElementById('jiraIssueModalOverlay');
-    const closeJiraIssueModalBtn = document.getElementById('closeJiraIssueModalBtn');
-    const cancelJiraIssueBtn = document.getElementById('cancelJiraIssueBtn');
-    const createJiraIssueModalBtn = document.getElementById('createJiraIssueModalBtn');
-
-    createJiraIssueBtn.addEventListener('click', () => {
-      jiraIssueModalOverlay.classList.add('active');
-    });
-    const closeJiraIssueModal = () => jiraIssueModalOverlay.classList.remove('active');
-    closeJiraIssueModalBtn.addEventListener('click', closeJiraIssueModal);
-    cancelJiraIssueBtn.addEventListener('click', closeJiraIssueModal);
-    createJiraIssueModalBtn.addEventListener('click', async () => {
-      const projectKey = document.getElementById('jiraProjectKey').value;
-      const summary = document.getElementById('jiraSummary').value;
-      const description = document.getElementById('jiraDescription').value;
-      const issueType = document.getElementById('jiraIssueType').value;
-      if (!projectKey || !summary) {
-        alert('Project Key and Issue Summary are required.');
-        return;
-      }
-      try {
-        const res = await fetch('/api/jira/issues', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectKey,
-            summary,
-            description,
-            issueType
-          })
-        });
-        if (!res.ok) throw new Error('Issue creation failed');
-        const data = await res.json();
-        alert(`Created issue ${data.key}!`);
-        closeJiraIssueModal();
-        loadJiraIssues();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to create issue');
-      }
-    });
-
-    // ---------------- Modal Logic for Viewing Jira Issue Details ----------------
-    const jiraIssueViewModalOverlay = document.getElementById('jiraIssueViewModalOverlay');
-    const closeJiraIssueViewModalBtn = document.getElementById('closeJiraIssueViewModalBtn');
-    const closeJiraIssueViewBtn = document.getElementById('closeJiraIssueViewBtn');
-    const jiraIssueViewContent = document.getElementById('jiraIssueViewContent');
-    const closeJiraIssueViewModal = () => jiraIssueViewModalOverlay.classList.remove('active');
-    closeJiraIssueViewModalBtn.addEventListener('click', closeJiraIssueViewModal);
-    closeJiraIssueViewBtn.addEventListener('click', closeJiraIssueViewModal);
-
-    async function viewJiraIssue(issueId) {
-      try {
-        const res = await fetch(`/api/jira/issue/${issueId}`);
-        if (!res.ok) throw new Error('Failed to fetch issue details');
-        const issue = await res.json();
-        jiraIssueViewContent.innerHTML = `
-          <h3>${issue.key}: ${issue.fields.summary}</h3>
-          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
-          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
-          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
-        `;
-        jiraIssueViewModalOverlay.classList.add('active');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to load issue details');
-      }
-    }
-
-    // ---------------- Jira Integration: Connect, Load Issues, and Check Status ----------------
+    // Jira Integration
     const connectJiraBtn = document.getElementById('connectJiraBtn');
     const loadJiraIssuesBtn = document.getElementById('loadJiraIssuesBtn');
+    const createJiraIssueBtn = document.getElementById('createJiraIssueBtn');
     const jiraIssuesContainer = document.getElementById('jiraIssuesContainer');
 
     connectJiraBtn.addEventListener('click', () => {
       window.location.href = 'https://gitpactserver.onrender.com/auth/jira';
     });
 
-    async function loadJiraIssues() {
+    loadJiraIssuesBtn.addEventListener('click', async () => {
       try {
         const res = await fetch('/api/jira/issues');
-        if (!res.ok) throw new Error('Failed to fetch issues');
         const data = await res.json();
         jiraIssuesContainer.innerHTML = '';
         if (data.issues && Array.isArray(data.issues) && data.issues.length > 0) {
           data.issues.forEach(issue => {
             const item = document.createElement('div');
-            item.classList.add('jira-issue-item');
+            item.classList.add('integration-item');
             item.innerHTML = `
-              <div class="jira-issue-key">${issue.key}</div>
-              <div class="jira-issue-summary">${issue.fields.summary}</div>
-              <div class="jira-issue-status">Status: ${issue.fields.status.name}</div>
+              <div class="integration-key">${issue.key}</div>
+              <div class="integration-summary">${issue.fields.summary}</div>
+              <div class="integration-status">Status: ${issue.fields.status.name}</div>
             `;
-            // When an issue item is clicked, view its details
             item.addEventListener('click', () => viewJiraIssue(issue.key));
             jiraIssuesContainer.appendChild(item);
           });
@@ -486,34 +427,161 @@
         alert('Error loading Jira issues');
         console.error(error);
       }
-    }
+    });
 
-    async function checkJiraStatus() {
+    async function viewJiraIssue(issueId) {
       try {
-        const res = await fetch('/api/jira/status');
-        const status = await res.json();
-        if (status.connected) {
-          connectJiraBtn.textContent = 'Connected to Jira';
-          loadJiraIssues();
-        } else {
-          connectJiraBtn.textContent = 'Connect Jira';
-        }
+        const res = await fetch(`/api/jira/issue/${issueId}`);
+        const issue = await res.json();
+        const issueDetails = `
+          <h3>${issue.key}: ${issue.fields.summary}</h3>
+          <p><strong>Status:</strong> ${issue.fields.status.name}</p>
+          <p><strong>Description:</strong> ${issue.fields.description || 'No description'}</p>
+          <p><strong>Issue Type:</strong> ${issue.fields.issuetype.name}</p>
+        `;
+        alert(issueDetails);
       } catch (err) {
-        console.error("Error checking Jira status:", err);
+        alert('Failed to load Jira issue details');
+        console.error(err);
       }
     }
 
-    window.addEventListener('load', checkJiraStatus);
+    // Confluence Integration
+    const connectConfluenceBtn = document.getElementById('connectConfluenceBtn');
+    const loadConfluencePagesBtn = document.getElementById('loadConfluencePagesBtn');
+    const createConfluencePageBtn = document.getElementById('createConfluencePageBtn');
+    const confluencePagesContainer = document.getElementById('confluencePagesContainer');
 
-    // Optional: Add event listeners for project view buttons (for your platform's projects)
-    document.getElementById('projectsTableBody').addEventListener('click', (e) => {
-      if (e.target.classList.contains('view')) {
-        const projectName = e.target.getAttribute('data-project');
-        // Here you would navigate to a detailed view of the project.
-        // For demonstration, we'll simply alert the project name.
-        alert(`Viewing details for project: ${projectName}`);
+    connectConfluenceBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/confluence';
+    });
+
+    loadConfluencePagesBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/confluence/pages');
+        const data = await res.json();
+        confluencePagesContainer.innerHTML = '';
+        if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+          data.pages.forEach(page => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${page.title}</div>
+              <div class="integration-summary">${page.body}</div>
+            `;
+            confluencePagesContainer.appendChild(item);
+          });
+        } else {
+          confluencePagesContainer.innerHTML = '<p>No pages found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading Confluence pages');
+        console.error(error);
       }
     });
+
+    // GitHub Integration
+    const connectGitHubBtn = document.getElementById('connectGitHubBtn');
+    const loadGitHubReposBtn = document.getElementById('loadGitHubReposBtn');
+    const createGitHubRepoBtn = document.getElementById('createGitHubRepoBtn');
+    const githubReposContainer = document.getElementById('githubReposContainer');
+
+    connectGitHubBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/github';
+    });
+
+    loadGitHubReposBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/github/repos');
+        const data = await res.json();
+        githubReposContainer.innerHTML = '';
+        if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
+          data.repos.forEach(repo => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${repo.name}</div>
+              <div class="integration-summary">${repo.description}</div>
+            `;
+            githubReposContainer.appendChild(item);
+          });
+        } else {
+          githubReposContainer.innerHTML = '<p>No repositories found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading GitHub repositories');
+        console.error(error);
+      }
+    });
+
+    // GitLab Integration
+    const connectGitLabBtn = document.getElementById('connectGitLabBtn');
+    const loadGitLabReposBtn = document.getElementById('loadGitLabReposBtn');
+    const createGitLabRepoBtn = document.getElementById('createGitLabRepoBtn');
+    const gitlabReposContainer = document.getElementById('gitlabReposContainer');
+
+    connectGitLabBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/gitlab';
+    });
+
+    loadGitLabReposBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/gitlab/repos');
+        const data = await res.json();
+        gitlabReposContainer.innerHTML = '';
+        if (data.repos && Array.isArray(data.repos) && data.repos.length > 0) {
+          data.repos.forEach(repo => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${repo.name}</div>
+              <div class="integration-summary">${repo.description}</div>
+            `;
+            gitlabReposContainer.appendChild(item);
+          });
+        } else {
+          gitlabReposContainer.innerHTML = '<p>No repositories found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading GitLab repositories');
+        console.error(error);
+      }
+    });
+
+    // SonarQube Integration
+    const connectSonarQubeBtn = document.getElementById('connectSonarQubeBtn');
+    const loadSonarQubeProjectsBtn = document.getElementById('loadSonarQubeProjectsBtn');
+    const createSonarQubeProjectBtn = document.getElementById('createSonarQubeProjectBtn');
+    const sonarqubeProjectsContainer = document.getElementById('sonarqubeProjectsContainer');
+
+    connectSonarQubeBtn.addEventListener('click', () => {
+      window.location.href = 'https://gitpactserver.onrender.com/auth/sonarqube';
+    });
+
+    loadSonarQubeProjectsBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/sonarqube/projects');
+        const data = await res.json();
+        sonarqubeProjectsContainer.innerHTML = '';
+        if (data.projects && Array.isArray(data.projects) && data.projects.length > 0) {
+          data.projects.forEach(project => {
+            const item = document.createElement('div');
+            item.classList.add('integration-item');
+            item.innerHTML = `
+              <div class="integration-key">${project.name}</div>
+              <div class="integration-summary">${project.description}</div>
+            `;
+            sonarqubeProjectsContainer.appendChild(item);
+          });
+        } else {
+          sonarqubeProjectsContainer.innerHTML = '<p>No projects found.</p>';
+        }
+      } catch (error) {
+        alert('Error loading SonarQube projects');
+        console.error(error);
+      }
+    });
+
   </script>
 </body>
 </html>
